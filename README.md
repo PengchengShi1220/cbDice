@@ -1,2 +1,2 @@
-# TopoBoundLoss
-Topological Boundary Loss for Imbalanced Anatomical Segmentation (MICCAI2023 TopCow challenge)
+# cbDice
+Centerline Boundary Loss Function for Imbalanced Anatomical Segmentation (MICCAI2023 TopCow challenge)
