@@ -3,7 +3,7 @@
 ## :bulb: News
 * **(July 2, 2024):** Accepted by MICCAI 2024, updated full codebase.
 * **(October 13, 2023):** :trophy: :tada: Our solution, powered by cbDice, won second place 🥈 in FinalTest-CTA-MultiClass and fourth place in FinalTest-MRA-MultiClass at the MICCAI 2023 [TopCoW 🐮](https://topcow23.grand-challenge.org/evaluation/finaltest-cta-multiclass/leaderboard) Challenge.
-* **(October 12, 2023):** Released part of the centerline boundary loss codes for nnU-Net V2.
+* **(October 12, 2023):** Released part of the centerline boundary loss codes for [nnU-Net V2](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.2).
 
 
 cbDice consists of several main components. The following links will take you directly to the core parts of the codebase:
