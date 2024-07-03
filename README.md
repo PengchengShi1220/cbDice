@@ -1,8 +1,8 @@
 # Centerline Boundary Dice Loss for Vascular Segmentation
+- 📃 [**Paper**](https://arxiv.org/abs/2407.01517)
 
-<div align="center">
-  | 📃 [**Paper**](https://arxiv.org/abs/2407.01517)
-</div>
+Make sure to replace placeholders like `yourusername`, `yourproject`, and `YourModule` with actual names specific to your project. This will help in providing clear and precise instructions to users who read your README.
+
 
 ## :bulb: News
 * **(July 2, 2024):** Accepted by MICCAI 2024, updated full codebase.
