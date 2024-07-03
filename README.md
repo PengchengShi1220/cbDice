@@ -1,7 +1,7 @@
 # Centerline Boundary Dice Loss for Vascular Segmentation
 
 <div align="center">
-  | 📃 [**Paper**](https://arxiv.org/abs/2407.01517) |
+  | 📃 [**Paper**](https://arxiv.org/abs/2407.01517) 
 </div>
 
 ## :bulb: News
