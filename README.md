@@ -1,9 +1,6 @@
 # Centerline Boundary Dice Loss for Vascular Segmentation
 - 📃 [**Paper**](https://arxiv.org/abs/2407.01517)
 
-Make sure to replace placeholders like `yourusername`, `yourproject`, and `YourModule` with actual names specific to your project. This will help in providing clear and precise instructions to users who read your README.
-
-
 ## :bulb: News
 * **(July 2, 2024):** Accepted by MICCAI 2024, updated full codebase.
 * **(October 13, 2023):** :tada: Our solution, powered by cbDice, won second place 🥈 in FinalTest-CTA-MultiClass and fourth place in FinalTest-MRA-MultiClass at the MICCAI 2023 [TopCoW 🐮](https://topcow23.grand-challenge.org/evaluation/finaltest-cta-multiclass/leaderboard) Challenge.
