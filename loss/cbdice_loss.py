@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import cupy as cp
 import monai
 from nnunetv2.training.nnUNetTrainer.variants.network_architecture.skeletonize import Skeletonize
 
