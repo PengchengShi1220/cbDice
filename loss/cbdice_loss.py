@@ -16,7 +16,6 @@ def soft_erode(img):
         p3 = -F.max_pool3d(-img,(1,1,3),(1,1,1),(0,0,1))
         return torch.min(torch.min(p1, p2), p3)
 
-
 def soft_dilate(img):
     if len(img.shape) == 4:
         return F.max_pool2d(img, (3,3), (1,1), (1,1))
