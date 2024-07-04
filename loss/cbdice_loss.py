@@ -2,9 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import cupy as cp
-from torch.utils.dlpack import to_dlpack
-from torch.utils.dlpack import from_dlpack
-from cucim.core.operations.morphology import distance_transform_edt as distance_transform_edt_cupy
+import monai
 from nnunetv2.training.nnUNetTrainer.variants.network_architecture.skeletonize import Skeletonize
 
 def soft_erode(img):
@@ -54,36 +52,29 @@ class CBDC_loss(torch.nn.Module):
         return D
 
     def get_weights(self, mask, skel, dim):
-
-        # # https://docs.cupy.dev/en/stable/user_guide/interoperability.html
-        mask_cupy_array = cp.from_dlpack(to_dlpack(mask))
-        dist_map_cupy_array = distance_transform_edt_cupy(mask_cupy_array)
-        dist_map = from_dlpack(dist_map_cupy_array.toDlpack())
-
-        dist_map[mask == 0] = 0
-        skel_radius = torch.zeros_like(skel, dtype=torch.float32)
-        skel_radius[skel == 1] = dist_map[skel == 1]
-        
-        if skel_radius.max() == 0 or skel_radius.min() == skel_radius.max():
-            return mask, skel.clone(), skel.clone()
+        distances = monai.transforms.utils.distance_transform_edt(mask)
 
         smooth = 1e-7
-        skel_radius_max = skel_radius.max()
-        # print("skel_radius_max:", skel_radius_max)
-        dist_map[dist_map > skel_radius_max] = skel_radius_max
-        dist_map_norm = dist_map / skel_radius_max
+        mask_inv = mask == 0
+        distances[mask_inv] = 0
 
-        skel_R_norm = skel_radius / skel_radius_max
+        skel_radius = torch.zeros_like(distances, dtype=torch.float32)
+        skel_radius[skel == 1] = distances[skel == 1]
+
+        skel_radius_max = skel_radius.reshape(skel_radius.shape[0], -1).max(dim=1).values.view(-1, 1, 1, 1)
+        valid_max_mask = skel_radius_max > 0
+        skel_radius_max[~valid_max_mask] = 1
+
+        dist_map_norm = torch.where(valid_max_mask, distances / skel_radius_max, distances)
+        skel_R_norm = torch.where(valid_max_mask, skel_radius / skel_radius_max, skel_radius)
 
         if dim == 2:
-            skel_1_R_norm = torch.zeros_like(skel, dtype=torch.float32)
-            skel_1_R_norm[skel == 1] = (1 + smooth) / (skel_R_norm[skel == 1] + smooth)
-            
+            skel_1_R_norm = (1 + smooth) / (skel_R_norm + smooth)
+            skel_1_R_norm[skel != 1] = 0
             return dist_map_norm, skel_R_norm, skel_1_R_norm
         else:
-            skel_1_R2_norm = torch.zeros_like(skel, dtype=torch.float32)
-            skel_1_R2_norm[skel == 1] = (1 + smooth) / (skel_R_norm[skel == 1] ** 2 + smooth)
-
+            skel_1_R2_norm = (1 + smooth) / (skel_R_norm ** 2 + smooth)
+            skel_1_R2_norm[skel != 1] = 0
             return dist_map_norm, skel_R_norm, skel_1_R2_norm
 
     def forward(self, y_pred, y_true, skeletonization_flage=True):
@@ -112,9 +103,8 @@ class CBDC_loss(torch.nn.Module):
             if dim == 2:
                 sl_1_R_norm = torch.zeros_like(skel_true).float()
                 sp_1_R_norm = torch.zeros_like(skel_pred).float()
-                for b_i in range(Batch):
-                    vl_dist_map_norm[b_i], sl_R_norm[b_i], sl_1_R_norm[b_i] = self.get_weights(y_true[b_i], skel_true[b_i], dim)
-                    vp_dist_map_norm[b_i], sp_R_norm[b_i], sp_1_R_norm[b_i] = self.get_weights(y_pred[b_i], skel_pred[b_i], dim)
+                vl_dist_map_norm, sl_R_norm, sl_1_R_norm = self.get_weights(y_true, skel_true, dim)
+                vp_dist_map_norm, sp_R_norm, sp_1_R_norm = self.get_weights(y_pred, skel_pred, dim)
 
                 w_sl = sl_1_R_norm
                 w_sp = sp_1_R_norm
@@ -122,9 +112,8 @@ class CBDC_loss(torch.nn.Module):
             elif dim == 3:
                 sl_1_R2_norm = torch.zeros_like(skel_true).float()
                 sp_1_R2_norm = torch.zeros_like(skel_pred).float()
-                for b_i in range(Batch):
-                    vl_dist_map_norm[b_i], sl_R_norm[b_i], sl_1_R2_norm[b_i] = self.get_weights(y_true[b_i], skel_true[b_i], dim)
-                    vp_dist_map_norm[b_i], sp_R_norm[b_i], sp_1_R2_norm[b_i] = self.get_weights(y_pred[b_i], skel_pred[b_i], dim)
+                vl_dist_map_norm, sl_R_norm, sl_1_R2_norm = self.get_weights(y_true, skel_true, dim)
+                vp_dist_map_norm, sp_R_norm, sp_1_R2_norm = self.get_weights(y_pred, skel_pred, dim)
 
                 w_sl = sl_1_R2_norm
                 w_sp = sp_1_R2_norm
@@ -140,7 +129,6 @@ class CBDC_loss(torch.nn.Module):
             w_tprec = (torch.sum(torch.multiply(w_sp, w_vl))+self.smooth)/(torch.sum(self.combine_tensors_test(w_spvp, w_slvl, w_sp))+self.smooth)
             w_tsens = (torch.sum(torch.multiply(w_sl, w_vp))+self.smooth)/(torch.sum(self.combine_tensors_test(w_slvl, w_spvp, w_sl))+self.smooth)
             cb_dice = 1. - 2.0 * (w_tprec * w_tsens) / (w_tprec + w_tsens)
-            # print("cb_dice: ", cb_dice)
 
         else:
             skel_pred = soft_skel(y_pred.unsqueeze(1), self.iter).squeeze(1)
@@ -168,35 +156,30 @@ class clMdice_loss(torch.nn.Module):
         return D
 
     def get_weights(self, mask, skel, dim):
-
-        # # https://docs.cupy.dev/en/stable/user_guide/interoperability.html
-        mask_cupy_array = cp.from_dlpack(to_dlpack(mask))
-        dist_map_cupy_array = distance_transform_edt_cupy(mask_cupy_array)
-        dist_map = from_dlpack(dist_map_cupy_array.toDlpack())
-
-        dist_map[mask == 0] = 0
-        skel_radius = torch.zeros_like(skel, dtype=torch.float32)
-        skel_radius[skel == 1] = dist_map[skel == 1]
-        
-        if skel_radius.max() == 0 or skel_radius.min() == skel_radius.max():
-            return mask, skel.clone(), skel.clone()
+        distances = monai.transforms.utils.distance_transform_edt(mask)
 
         smooth = 1e-7
-        skel_radius_max = skel_radius.max()
-        dist_map[dist_map > skel_radius_max] = skel_radius_max
+        mask_inv = mask == 0
+        distances[mask_inv] = 0
 
-        skel_R = skel_radius 
+        skel_radius = torch.zeros_like(distances, dtype=torch.float32)
+        skel_radius[skel == 1] = distances[skel == 1]
+
+        skel_radius_max = skel_radius.reshape(skel_radius.shape[0], -1).max(dim=1).values.view(-1, 1, 1, 1)
+        valid_max_mask = skel_radius_max > 0
+        skel_radius_max[~valid_max_mask] = 1
+
+        dist_map_norm = torch.where(valid_max_mask, distances / skel_radius_max, distances)
+        skel_R_norm = torch.where(valid_max_mask, skel_radius / skel_radius_max, skel_radius)
 
         if dim == 2:
-            skel_1_R = torch.zeros_like(skel, dtype=torch.float32)
-            skel_1_R[skel == 1] = (1 + smooth) / (skel_R[skel == 1] + smooth)
-            
-            return dist_map, skel_R, skel_1_R
+            skel_1_R_norm = (1 + smooth) / (skel_R_norm + smooth)
+            skel_1_R_norm[skel != 1] = 0
+            return dist_map_norm, skel_R_norm, skel_1_R_norm
         else:
-            skel_1_R2 = torch.zeros_like(skel, dtype=torch.float32)
-            skel_1_R2[skel == 1] = (1 + smooth) / (skel_R[skel == 1] ** 2 + smooth)
-
-            return dist_map, skel_R, skel_1_R2
+            skel_1_R2_norm = (1 + smooth) / (skel_R_norm ** 2 + smooth)
+            skel_1_R2_norm[skel != 1] = 0
+            return dist_map_norm, skel_R_norm, skel_1_R2_norm
 
     def forward(self, y_pred, y_true, skeletonization_flage=True):
         if len(y_true.shape) == 4:
@@ -266,4 +249,3 @@ class clMdice_loss(torch.nn.Module):
             cb_dice = 1.- 2.0 * (tprec*tsens)/(tprec+tsens)
 
         return cb_dice
-
