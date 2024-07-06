@@ -74,22 +74,6 @@ def combine_arrays_test(A, B, C):
     D[mask_AC] = A_C[mask_AC]
     return D
 
-def batch_id2pos_indexs_k(id, size):
-    if len(size) == 2:
-        x, y = size
-        pos_x = (id // y).astype(np.int32)
-        pos_y = (id % y).astype(np.int32)
-        pos = np.stack((pos_x, pos_y))
-
-    elif len(size) == 3:
-        x, y, z = size
-        pos_x = (id // (y * z)).astype(np.int32)
-        pos_y = ((id // z) % y).astype(np.int32)
-        pos_z = (id % z).astype(np.int32)
-        pos = np.stack((pos_x, pos_y, pos_z))
-
-    return pos
-
 def get_weights_2d(mask, skel):
     # For GPU:
     # # https://docs.cupy.dev/en/stable/user_guide/interoperability.html
