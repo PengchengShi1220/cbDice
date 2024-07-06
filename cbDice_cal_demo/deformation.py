@@ -75,12 +75,6 @@ def combine_arrays_test(A, B, C):
     return D
 
 def get_weights_2d(mask, skel):
-    # For GPU:
-    # # https://docs.cupy.dev/en/stable/user_guide/interoperability.html
-    # mask_cupy_array = cp.from_dlpack(to_dlpack(mask))
-    # dist_map_cupy_array = distance_transform_edt_cupy(mask_cupy_array)
-    # dist_map = from_dlpack(dist_map_cupy_array.toDlpack())
-    
     # For CPU:
     dist_map = ndimage.distance_transform_edt(mask)
 
