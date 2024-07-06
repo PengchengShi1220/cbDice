@@ -87,14 +87,23 @@ def get_2d_sincos_pos_embed_from_grid(embed_dim, grid):
     return emb
 
 def get_3d_sincos_pos_embed_from_grid(embed_dim, grid):
-    # print("embed_dim: ", embed_dim)
-    assert embed_dim % 3 == 0
+    assert embed_dim % 2 == 0
 
-    # use one third of dimensions to encode grid_h
-    emb_h = get_1d_sincos_pos_embed_from_grid(embed_dim // 3, grid[0])  # (H*W*D, Dim/3)
-    emb_w = get_1d_sincos_pos_embed_from_grid(embed_dim // 3, grid[1])  # (H*W*D, Dim/3)
-    emb_d = get_1d_sincos_pos_embed_from_grid(embed_dim // 3, grid[2])  # (H*W*D, Dim/3)
-    emb = np.concatenate([emb_h, emb_w, emb_d], axis=1)  # (H*W*D, Dim)
+    emb_dim_per_axis = (embed_dim // 2) // 3 * 2 # ensure emb_dim_per_axis is divisible by 2
+
+    emb_h = get_1d_sincos_pos_embed_from_grid(emb_dim_per_axis, grid[0])  # (D*H*W, Dim/3)
+    emb_w = get_1d_sincos_pos_embed_from_grid(emb_dim_per_axis, grid[1])  # (D*H*W, Dim/3)
+    emb_d = get_1d_sincos_pos_embed_from_grid(emb_dim_per_axis, grid[2])  # (D*H*W, Dim/3)
+
+    emb = np.concatenate([emb_h, emb_w, emb_d], axis=1)  # (D*H*W, Dim)
+
+    while emb.shape[1] < embed_dim:
+        axis_to_extend = np.argmax([grid[0].size, grid[1].size, grid[2].size])
+        emb_extra = get_1d_sincos_pos_embed_from_grid(
+            embed_dim - emb.shape[1], grid[axis_to_extend]
+        ) 
+        emb = np.concatenate([emb, emb_extra], axis=1)
+
     return emb
 
 def get_1d_sincos_pos_embed_from_grid(embed_dim, pos):
