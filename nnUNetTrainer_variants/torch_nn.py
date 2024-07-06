@@ -70,7 +70,7 @@ class BasicConv(Seq):
         elif self.conv_op == nn.Conv3d:
             self.batch_norm = nn.BatchNorm3d
             self.instance_norm = nn.InstanceNorm3d
-            self.groups_num = 6
+            self.groups_num = 8
         else:
             raise NotImplementedError('conv operation [%s] is not found' % self.conv_op)
 
