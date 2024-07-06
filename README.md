@@ -9,6 +9,6 @@
 
 cbDice consists of several main components. The following links will take you directly to the core parts of the codebase:
 
-- cbDice Calculation Demo: The network architecture is available in the [cbDice_cal_demo](https://github.com/PengchengShi1220/cbDice/tree/main/cbDice_cal_demo) folder. This includes three scenarios: translation, deformation, and diameter imbalance.
+- cbDice Calculation Demo: The demo is available in the [cbDice_cal_demo](https://github.com/PengchengShi1220/cbDice/tree/main/cbDice_cal_demo) folder. It includes three scenarios: translation, deformation, and diameter imbalance.
 - Network Training: The [nnUNetTrainer_variants](https://github.com/PengchengShi1220/cbDice/tree/main/nnUNetTrainer_variants) folder contains the files responsible for network training.
 - Loss Function: The loss functions, including cbDice, clDice, and B-DoU, are located in the [loss](https://github.com/PengchengShi1220/cbDice/tree/main/loss) folder.
