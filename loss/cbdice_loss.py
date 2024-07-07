@@ -41,7 +41,7 @@ class CBDC_loss(torch.nn.Module):
         self.smooth = smooth
         self.skeletonization_module = Skeletonize(probabilistic=False, simple_point_detection='EulerCharacteristic')
     
-    def combine_tensors_test(self, A, B, C):
+    def combine_tensors(self, A, B, C):
         A_C = A * C
         B_C = B * C
         D = B_C.clone()
@@ -91,50 +91,18 @@ class CBDC_loss(torch.nn.Module):
         if skeletonization_flage:
             skel_pred = self.skeletonization_module(y_pred.unsqueeze(1)).squeeze(1)
             skel_true = self.skeletonization_module(y_true.unsqueeze(1).detach()).squeeze(1)
-
-            sl_R_norm = torch.zeros_like(skel_true).float()
-            sp_R_norm = torch.zeros_like(skel_pred).float()
-            vl_dist_map_norm = torch.zeros_like(y_true).float()
-            vp_dist_map_norm = torch.zeros_like(y_pred).float()
-
-            Batch = y_true.shape[0]
-            if dim == 2:
-                sl_1_R_norm = torch.zeros_like(skel_true).float()
-                sp_1_R_norm = torch.zeros_like(skel_pred).float()
-                vl_dist_map_norm, sl_R_norm, sl_1_R_norm = self.get_weights(y_true, skel_true, dim)
-                vp_dist_map_norm, sp_R_norm, sp_1_R_norm = self.get_weights(y_pred, skel_pred, dim)
-
-                w_sl = sl_1_R_norm
-                w_sp = sp_1_R_norm
-
-            elif dim == 3:
-                sl_1_R2_norm = torch.zeros_like(skel_true).float()
-                sp_1_R2_norm = torch.zeros_like(skel_pred).float()
-                vl_dist_map_norm, sl_R_norm, sl_1_R2_norm = self.get_weights(y_true, skel_true, dim)
-                vp_dist_map_norm, sp_R_norm, sp_1_R2_norm = self.get_weights(y_pred, skel_pred, dim)
-
-                w_sl = sl_1_R2_norm
-                w_sp = sp_1_R2_norm
-                
-            else:
-                raise ValueError("dim should be 2 or 3.")
-            
-            w_vl = vl_dist_map_norm
-            w_vp = vp_dist_map_norm
-            w_slvl = sl_R_norm
-            w_spvp = sp_R_norm
-
-            w_tprec = (torch.sum(torch.multiply(w_sp, w_vl))+self.smooth)/(torch.sum(self.combine_tensors_test(w_spvp, w_slvl, w_sp))+self.smooth)
-            w_tsens = (torch.sum(torch.multiply(w_sl, w_vp))+self.smooth)/(torch.sum(self.combine_tensors_test(w_slvl, w_spvp, w_sl))+self.smooth)
-            cb_dice = 1. - 2.0 * (w_tprec * w_tsens) / (w_tprec + w_tsens)
-
         else:
             skel_pred = soft_skel(y_pred.unsqueeze(1), self.iter).squeeze(1)
             skel_true = soft_skel(y_true.unsqueeze(1).detach(), self.iter).squeeze(1)
 
-            tprec = (torch.sum(torch.multiply(skel_pred, y_true))+self.smooth)/(torch.sum(skel_pred)+self.smooth)    
-            tsens = (torch.sum(torch.multiply(skel_true, y_pred))+self.smooth)/(torch.sum(skel_true)+self.smooth)    
-            cb_dice = 1.- 2.0 * (tprec*tsens)/(tprec+tsens)
+        w_sl = torch.zeros_like(skel_true).float()
+        w_sp = torch.zeros_like(skel_pred).float()
+        w_vl, w_slvl, w_sl = self.get_weights(y_true, skel_true, dim)
+        w_vp, w_spvp, w_sp = self.get_weights(y_pred, skel_pred, dim)
+
+        w_tprec = (torch.sum(torch.multiply(w_sp, w_vl))+self.smooth)/(torch.sum(self.combine_tensors(w_spvp, w_slvl, w_sp))+self.smooth)
+        w_tsens = (torch.sum(torch.multiply(w_sl, w_vp))+self.smooth)/(torch.sum(self.combine_tensors(w_slvl, w_spvp, w_sl))+self.smooth)
+        cb_dice = 1. - 2.0 * (w_tprec * w_tsens) / (w_tprec + w_tsens)
 
         return cb_dice
     
@@ -145,7 +113,7 @@ class clMdice_loss(torch.nn.Module):
         self.smooth = smooth
         self.skeletonization_module = Skeletonize(probabilistic=False, simple_point_detection='EulerCharacteristic')
     
-    def combine_tensors_test(self, A, B, C):
+    def combine_tensors(self, A, B, C):
         A_C = A * C
         B_C = B * C
         D = B_C.clone()
@@ -233,8 +201,8 @@ class clMdice_loss(torch.nn.Module):
             w_slvl = sl_R
             w_spvp = sp_R
 
-            w_tprec = (torch.sum(torch.multiply(w_sp, w_vl))+self.smooth)/(torch.sum(self.combine_tensors_test(w_spvp, w_slvl, w_sp))+self.smooth)
-            w_tsens = (torch.sum(torch.multiply(w_sl, w_vp))+self.smooth)/(torch.sum(self.combine_tensors_test(w_slvl, w_spvp, w_sl))+self.smooth)
+            w_tprec = (torch.sum(torch.multiply(w_sp, w_vl))+self.smooth)/(torch.sum(self.combine_tensors(w_spvp, w_slvl, w_sp))+self.smooth)
+            w_tsens = (torch.sum(torch.multiply(w_sl, w_vp))+self.smooth)/(torch.sum(self.combine_tensors(w_slvl, w_spvp, w_sl))+self.smooth)
             cb_dice = 1. - 2.0 * (w_tprec * w_tsens) / (w_tprec + w_tsens)
             # print("cb_dice: ", cb_dice)
 
