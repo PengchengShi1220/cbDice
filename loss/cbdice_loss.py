@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import monai
+from monai.transforms import distance_transform_edt
 from nnunetv2.training.loss.skeletonize import Skeletonize
 
 def soft_erode(img):
@@ -50,7 +50,7 @@ class CBDC_loss(torch.nn.Module):
         return D
 
     def get_weights(self, mask, skel, dim):
-        distances = monai.transforms.utils.distance_transform_edt(mask)
+        distances = distance_transform_edt(mask).float()
 
         smooth = 1e-7
         mask_inv = mask == 0
@@ -120,7 +120,7 @@ class clMdice_loss(torch.nn.Module):
         return D
 
     def get_weights(self, mask, skel, dim):
-        distances = monai.transforms.utils.distance_transform_edt(mask)
+        distances = distance_transform_edt(mask).float()
 
         smooth = 1e-7
         mask_inv = mask == 0
