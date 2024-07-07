@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import monai
-from nnunetv2.training.nnUNetTrainer.variants.network_architecture.skeletonize import Skeletonize
+from nnunetv2.training.loss.skeletonize import Skeletonize
 
 def soft_erode(img):
     if len(img.shape) == 4:
@@ -95,13 +95,11 @@ class CBDC_loss(torch.nn.Module):
             skel_pred = soft_skel(y_pred.unsqueeze(1), self.iter).squeeze(1)
             skel_true = soft_skel(y_true.unsqueeze(1).detach(), self.iter).squeeze(1)
 
-        w_sl = torch.zeros_like(skel_true).float()
-        w_sp = torch.zeros_like(skel_pred).float()
-        w_vl, w_slvl, w_sl = self.get_weights(y_true, skel_true, dim)
-        w_vp, w_spvp, w_sp = self.get_weights(y_pred, skel_pred, dim)
+        q_vl, q_slvl, q_sl = self.get_weights(y_true, skel_true, dim)
+        q_vp, q_spvp, q_sp = self.get_weights(y_pred, skel_pred, dim)
 
-        w_tprec = (torch.sum(torch.multiply(w_sp, w_vl))+self.smooth)/(torch.sum(self.combine_tensors(w_spvp, w_slvl, w_sp))+self.smooth)
-        w_tsens = (torch.sum(torch.multiply(w_sl, w_vp))+self.smooth)/(torch.sum(self.combine_tensors(w_slvl, w_spvp, w_sl))+self.smooth)
+        w_tprec = (torch.sum(torch.multiply(q_sp, q_vl))+self.smooth)/(torch.sum(self.combine_tensors(q_spvp, q_slvl, q_sp))+self.smooth)
+        w_tsens = (torch.sum(torch.multiply(q_sl, q_vp))+self.smooth)/(torch.sum(self.combine_tensors(q_slvl, q_spvp, q_sl))+self.smooth)
         cb_dice = 1. - 2.0 * (w_tprec * w_tsens) / (w_tprec + w_tsens)
 
         return cb_dice
@@ -163,55 +161,18 @@ class clMdice_loss(torch.nn.Module):
         if skeletonization_flage:
             skel_pred = self.skeletonization_module(y_pred.unsqueeze(1)).squeeze(1)
             skel_true = self.skeletonization_module(y_true.unsqueeze(1).detach()).squeeze(1)
-
-            sl_R = torch.zeros_like(skel_true).float()
-            sp_R = torch.zeros_like(skel_pred).float()
-            vl_dist_map = torch.zeros_like(y_true).float()
-            vp_dist_map = torch.zeros_like(y_pred).float()
-
-            sl = skel_true
-            sp = skel_pred
-            
-            Batch = y_true.shape[0]
-            if dim == 2:
-                sl_1_R = torch.zeros_like(skel_true).float()
-                sp_1_R = torch.zeros_like(skel_pred).float()
-                for b_i in range(Batch):
-                    vl_dist_map[b_i], sl_R[b_i], sl_1_R[b_i] = self.get_weights(y_true[b_i], skel_true[b_i], dim)
-                    vp_dist_map[b_i], sp_R[b_i], sp_1_R[b_i] = self.get_weights(y_pred[b_i], skel_pred[b_i], dim)
-
-                w_sl = sl
-                w_sp = sp
-
-            elif dim == 3:
-                sl_1_R2 = torch.zeros_like(skel_true).float()
-                sp_1_R2 = torch.zeros_like(skel_pred).float()
-                for b_i in range(Batch):
-                    vl_dist_map[b_i], sl_R[b_i], sl_1_R2[b_i] = self.get_weights(y_true[b_i], skel_true[b_i], dim)
-                    vp_dist_map[b_i], sp_R[b_i], sp_1_R2[b_i] = self.get_weights(y_pred[b_i], skel_pred[b_i], dim)
-
-                w_sl = sl
-                w_sp = sp
-                
-            else:
-                raise ValueError("dim should be 2 or 3.")
-            
-            w_vl = vl_dist_map
-            w_vp = vp_dist_map
-            w_slvl = sl_R
-            w_spvp = sp_R
-
-            w_tprec = (torch.sum(torch.multiply(w_sp, w_vl))+self.smooth)/(torch.sum(self.combine_tensors(w_spvp, w_slvl, w_sp))+self.smooth)
-            w_tsens = (torch.sum(torch.multiply(w_sl, w_vp))+self.smooth)/(torch.sum(self.combine_tensors(w_slvl, w_spvp, w_sl))+self.smooth)
-            cb_dice = 1. - 2.0 * (w_tprec * w_tsens) / (w_tprec + w_tsens)
-            # print("cb_dice: ", cb_dice)
-
         else:
             skel_pred = soft_skel(y_pred.unsqueeze(1), self.iter).squeeze(1)
             skel_true = soft_skel(y_true.unsqueeze(1).detach(), self.iter).squeeze(1)
 
-            tprec = (torch.sum(torch.multiply(skel_pred, y_true))+self.smooth)/(torch.sum(skel_pred)+self.smooth)    
-            tsens = (torch.sum(torch.multiply(skel_true, y_pred))+self.smooth)/(torch.sum(skel_true)+self.smooth)    
-            cb_dice = 1.- 2.0 * (tprec*tsens)/(tprec+tsens)
+        q_vl, q_slvl, _ = self.get_weights(y_true, skel_true, dim)
+        q_vp, q_spvp, _ = self.get_weights(y_pred, skel_pred, dim)
 
-        return cb_dice
+        q_sl = skel_true
+        q_sp = skel_pred
+
+        w_tprec = (torch.sum(torch.multiply(q_sp, q_vl))+self.smooth)/(torch.sum(self.combine_tensors(q_spvp, q_slvl, q_sp))+self.smooth)
+        w_tsens = (torch.sum(torch.multiply(q_sl, q_vp))+self.smooth)/(torch.sum(self.combine_tensors(q_slvl, q_spvp, q_sl))+self.smooth)
+        cl_m_dice = 1. - 2.0 * (w_tprec * w_tsens) / (w_tprec + w_tsens)
+        
+        return cl_m_dice
