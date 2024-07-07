@@ -107,14 +107,14 @@ def clDice_test(vp, vl):
         sl = skeletonize(vl)
         vl_dist_map, vl_dist_map_norm, sl_R, sl_R_norm, sl_1_R, sl_1_R_norm = get_weights_2d(vl, sl)
         vp_dist_map, vp_dist_map_norm, sp_R, sp_R_norm, sp_1_R, sp_1_R_norm = get_weights_2d(vp, sp)
-        w_sl = sl
-        w_sp = sp
-        w_vl = vl
-        w_vp = vp
-        w_slvl = sl
-        w_spvp = sp
-        weighted_tprec = (np.sum(w_sp*w_vl)+smooth)/(np.sum(combine_arrays_test(w_spvp, w_slvl, w_sp))+smooth)
-        weighted_tsens = (np.sum(w_sl*w_vp)+smooth)/(np.sum(combine_arrays_test(w_slvl, w_spvp, w_sl))+smooth) 
+        q_sl = sl
+        q_sp = sp
+        q_vl = vl
+        q_vp = vp
+        q_slvl = sl
+        q_spvp = sp
+        weighted_tprec = (np.sum(q_sp*q_vl)+smooth)/(np.sum(combine_arrays_test(q_spvp, q_slvl, q_sp))+smooth)
+        weighted_tsens = (np.sum(q_sl*q_vp)+smooth)/(np.sum(combine_arrays_test(q_slvl, q_spvp, q_sl))+smooth) 
         
     return 2.0 * (weighted_tprec * weighted_tsens) / (weighted_tprec + weighted_tsens)
 
@@ -125,14 +125,14 @@ def cbDice_test_sr(vp, vl):
         sl = skeletonize(vl)
         vl_dist_map, vl_dist_map_norm, sl_R, sl_R_norm, sl_1_R, sl_1_R_norm = get_weights_2d(vl, sl)
         vp_dist_map, vp_dist_map_norm, sp_R, sp_R_norm, sp_1_R, sp_1_R_norm = get_weights_2d(vp, sp)
-        w_sl = sl_R
-        w_sp = sp_R
-        w_vl = vl
-        w_vp = vp
-        w_slvl = sl
-        w_spvp = sp
-        weighted_tprec = (np.sum(w_sp*w_vl)+smooth)/(np.sum(combine_arrays_test(w_spvp, w_slvl, w_sp))+smooth)
-        weighted_tsens = (np.sum(w_sl*w_vp)+smooth)/(np.sum(combine_arrays_test(w_slvl, w_spvp, w_sl))+smooth) 
+        q_sl = sl_R
+        q_sp = sp_R
+        q_vl = vl
+        q_vp = vp
+        q_slvl = sl
+        q_spvp = sp
+        weighted_tprec = (np.sum(q_sp*q_vl)+smooth)/(np.sum(combine_arrays_test(q_spvp, q_slvl, q_sp))+smooth)
+        weighted_tsens = (np.sum(q_sl*q_vp)+smooth)/(np.sum(combine_arrays_test(q_slvl, q_spvp, q_sl))+smooth) 
         
     return 2.0 * (weighted_tprec * weighted_tsens) / (weighted_tprec + weighted_tsens)
 
@@ -143,14 +143,14 @@ def cbDice_test_mb(vp, vl):
         sl = skeletonize(vl)
         vl_dist_map, vl_dist_map_norm, sl_R, sl_R_norm, sl_1_R, sl_1_R_norm = get_weights_2d(vl, sl)
         vp_dist_map, vp_dist_map_norm, sp_R, sp_R_norm, sp_1_R, sp_1_R_norm = get_weights_2d(vp, sp)
-        w_sl = sl
-        w_sp = sp
-        w_vl = vl_dist_map
-        w_vp = vp_dist_map
-        w_slvl = sl_R
-        w_spvp = sp_R
-        weighted_tprec = (np.sum(w_sp*w_vl)+smooth)/(np.sum(combine_arrays_test(w_spvp, w_slvl, w_sp))+smooth)
-        weighted_tsens = (np.sum(w_sl*w_vp)+smooth)/(np.sum(combine_arrays_test(w_slvl, w_spvp, w_sl))+smooth) 
+        q_sl = sl
+        q_sp = sp
+        q_vl = vl_dist_map
+        q_vp = vp_dist_map
+        q_slvl = sl_R
+        q_spvp = sp_R
+        weighted_tprec = (np.sum(q_sp*q_vl)+smooth)/(np.sum(combine_arrays_test(q_spvp, q_slvl, q_sp))+smooth)
+        weighted_tsens = (np.sum(q_sl*q_vp)+smooth)/(np.sum(combine_arrays_test(q_slvl, q_spvp, q_sl))+smooth) 
         
     return 2.0 * (weighted_tprec * weighted_tsens) / (weighted_tprec + weighted_tsens)
 
@@ -161,14 +161,14 @@ def cbDice_test_srmb(vp, vl):
         sl = skeletonize(vl)
         vl_dist_map, vl_dist_map_norm, sl_R, sl_R_norm, sl_1_R, sl_1_R_norm = get_weights_2d(vl, sl)
         vp_dist_map, vp_dist_map_norm, sp_R, sp_R_norm, sp_1_R, sp_1_R_norm = get_weights_2d(vp, sp)
-        w_sl = sl_R
-        w_sp = sp_R
-        w_vl = vl_dist_map
-        w_vp = vp_dist_map
-        w_slvl = sl_R
-        w_spvp = sp_R
-        weighted_tprec = (np.sum(w_sp*w_vl)+smooth)/(np.sum(combine_arrays_test(w_spvp, w_slvl, w_sp))+smooth)
-        weighted_tsens = (np.sum(w_sl*w_vp)+smooth)/(np.sum(combine_arrays_test(w_slvl, w_spvp, w_sl))+smooth) 
+        q_sl = sl_R
+        q_sp = sp_R
+        q_vl = vl_dist_map
+        q_vp = vp_dist_map
+        q_slvl = sl_R
+        q_spvp = sp_R
+        weighted_tprec = (np.sum(q_sp*q_vl)+smooth)/(np.sum(combine_arrays_test(q_spvp, q_slvl, q_sp))+smooth)
+        weighted_tsens = (np.sum(q_sl*q_vp)+smooth)/(np.sum(combine_arrays_test(q_slvl, q_spvp, q_sl))+smooth) 
         
     return 2.0 * (weighted_tprec * weighted_tsens) / (weighted_tprec + weighted_tsens)
 
@@ -179,14 +179,14 @@ def cbDice_test_srimb(vp, vl):
         sl = skeletonize(vl)
         vl_dist_map, vl_dist_map_norm, sl_R, sl_R_norm, sl_1_R, sl_1_R_norm = get_weights_2d(vl, sl)
         vp_dist_map, vp_dist_map_norm, sp_R, sp_R_norm, sp_1_R, sp_1_R_norm = get_weights_2d(vp, sp)
-        w_sl = sl_1_R
-        w_sp = sp_1_R
-        w_vl = vl_dist_map
-        w_vp = vp_dist_map
-        w_slvl = sl_R
-        w_spvp = sp_R
-        weighted_tprec = (np.sum(w_sp*w_vl)+smooth)/(np.sum(combine_arrays_test(w_spvp, w_slvl, w_sp))+smooth)
-        weighted_tsens = (np.sum(w_sl*w_vp)+smooth)/(np.sum(combine_arrays_test(w_slvl, w_spvp, w_sl))+smooth) 
+        q_sl = sl_1_R
+        q_sp = sp_1_R
+        q_vl = vl_dist_map
+        q_vp = vp_dist_map
+        q_slvl = sl_R
+        q_spvp = sp_R
+        weighted_tprec = (np.sum(q_sp*q_vl)+smooth)/(np.sum(combine_arrays_test(q_spvp, q_slvl, q_sp))+smooth)
+        weighted_tsens = (np.sum(q_sl*q_vp)+smooth)/(np.sum(combine_arrays_test(q_slvl, q_spvp, q_sl))+smooth) 
         
     return 2.0 * (weighted_tprec * weighted_tsens) / (weighted_tprec + weighted_tsens)
 
@@ -197,14 +197,14 @@ def cbDice_test_sr_norm(vp, vl):
         sl = skeletonize(vl)
         vl_dist_map, vl_dist_map_norm, sl_R, sl_R_norm, sl_1_R, sl_1_R_norm = get_weights_2d(vl, sl)
         vp_dist_map, vp_dist_map_norm, sp_R, sp_R_norm, sp_1_R, sp_1_R_norm = get_weights_2d(vp, sp)
-        w_sl = sl_R_norm
-        w_sp = sp_R_norm
-        w_vl = vl
-        w_vp = vp
-        w_slvl = sl
-        w_spvp = sp
-        weighted_tprec = (np.sum(w_sp*w_vl)+smooth)/(np.sum(combine_arrays_test(w_spvp, w_slvl, w_sp))+smooth)
-        weighted_tsens = (np.sum(w_sl*w_vp)+smooth)/(np.sum(combine_arrays_test(w_slvl, w_spvp, w_sl))+smooth) 
+        q_sl = sl_R_norm
+        q_sp = sp_R_norm
+        q_vl = vl
+        q_vp = vp
+        q_slvl = sl
+        q_spvp = sp
+        weighted_tprec = (np.sum(q_sp*q_vl)+smooth)/(np.sum(combine_arrays_test(q_spvp, q_slvl, q_sp))+smooth)
+        weighted_tsens = (np.sum(q_sl*q_vp)+smooth)/(np.sum(combine_arrays_test(q_slvl, q_spvp, q_sl))+smooth) 
         
     return 2.0 * (weighted_tprec * weighted_tsens) / (weighted_tprec + weighted_tsens)
 
@@ -215,14 +215,14 @@ def cbDice_test_mb_norm(vp, vl):
         sl = skeletonize(vl)
         vl_dist_map, vl_dist_map_norm, sl_R, sl_R_norm, sl_1_R, sl_1_R_norm = get_weights_2d(vl, sl)
         vp_dist_map, vp_dist_map_norm, sp_R, sp_R_norm, sp_1_R, sp_1_R_norm = get_weights_2d(vp, sp)
-        w_sl = sl
-        w_sp = sp
-        w_vl = vl_dist_map_norm
-        w_vp = vp_dist_map_norm
-        w_slvl = sl_R_norm
-        w_spvp = sp_R_norm
-        weighted_tprec = (np.sum(w_sp*w_vl)+smooth)/(np.sum(combine_arrays_test(w_spvp, w_slvl, w_sp))+smooth)
-        weighted_tsens = (np.sum(w_sl*w_vp)+smooth)/(np.sum(combine_arrays_test(w_slvl, w_spvp, w_sl))+smooth) 
+        q_sl = sl
+        q_sp = sp
+        q_vl = vl_dist_map_norm
+        q_vp = vp_dist_map_norm
+        q_slvl = sl_R_norm
+        q_spvp = sp_R_norm
+        weighted_tprec = (np.sum(q_sp*q_vl)+smooth)/(np.sum(combine_arrays_test(q_spvp, q_slvl, q_sp))+smooth)
+        weighted_tsens = (np.sum(q_sl*q_vp)+smooth)/(np.sum(combine_arrays_test(q_slvl, q_spvp, q_sl))+smooth) 
         
     return 2.0 * (weighted_tprec * weighted_tsens) / (weighted_tprec + weighted_tsens)
 
@@ -233,14 +233,14 @@ def cbDice_test_srmb_norm(vp, vl):
         sl = skeletonize(vl)
         vl_dist_map, vl_dist_map_norm, sl_R, sl_R_norm, sl_1_R, sl_1_R_norm = get_weights_2d(vl, sl)
         vp_dist_map, vp_dist_map_norm, sp_R, sp_R_norm, sp_1_R, sp_1_R_norm = get_weights_2d(vp, sp)
-        w_sl = sl_R_norm
-        w_sp = sp_R_norm
-        w_vl = vl_dist_map_norm
-        w_vp = vp_dist_map_norm
-        w_slvl = sl_R_norm
-        w_spvp = sp_R_norm
-        weighted_tprec = (np.sum(w_sp*w_vl)+smooth)/(np.sum(combine_arrays_test(w_spvp, w_slvl, w_sp))+smooth)
-        weighted_tsens = (np.sum(w_sl*w_vp)+smooth)/(np.sum(combine_arrays_test(w_slvl, w_spvp, w_sl))+smooth) 
+        q_sl = sl_R_norm
+        q_sp = sp_R_norm
+        q_vl = vl_dist_map_norm
+        q_vp = vp_dist_map_norm
+        q_slvl = sl_R_norm
+        q_spvp = sp_R_norm
+        weighted_tprec = (np.sum(q_sp*q_vl)+smooth)/(np.sum(combine_arrays_test(q_spvp, q_slvl, q_sp))+smooth)
+        weighted_tsens = (np.sum(q_sl*q_vp)+smooth)/(np.sum(combine_arrays_test(q_slvl, q_spvp, q_sl))+smooth) 
         
     return 2.0 * (weighted_tprec * weighted_tsens) / (weighted_tprec + weighted_tsens)
 
@@ -251,14 +251,14 @@ def cbDice_test_srimb_norm(vp, vl):
         sl = skeletonize(vl)
         vl_dist_map, vl_dist_map_norm, sl_R, sl_R_norm, sl_1_R, sl_1_R_norm = get_weights_2d(vl, sl)
         vp_dist_map, vp_dist_map_norm, sp_R, sp_R_norm, sp_1_R, sp_1_R_norm = get_weights_2d(vp, sp)
-        w_sl = sl_1_R_norm
-        w_sp = sp_1_R_norm
-        w_vl = vl_dist_map_norm
-        w_vp = vp_dist_map_norm
-        w_slvl = sl_R_norm
-        w_spvp = sp_R_norm
-        weighted_tprec = (np.sum(w_sp*w_vl)+smooth)/(np.sum(combine_arrays_test(w_spvp, w_slvl, w_sp))+smooth)
-        weighted_tsens = (np.sum(w_sl*w_vp)+smooth)/(np.sum(combine_arrays_test(w_slvl, w_spvp, w_sl))+smooth) 
+        q_sl = sl_1_R_norm
+        q_sp = sp_1_R_norm
+        q_vl = vl_dist_map_norm
+        q_vp = vp_dist_map_norm
+        q_slvl = sl_R_norm
+        q_spvp = sp_R_norm
+        weighted_tprec = (np.sum(q_sp*q_vl)+smooth)/(np.sum(combine_arrays_test(q_spvp, q_slvl, q_sp))+smooth)
+        weighted_tsens = (np.sum(q_sl*q_vp)+smooth)/(np.sum(combine_arrays_test(q_slvl, q_spvp, q_sl))+smooth) 
         
     return 2.0 * (weighted_tprec * weighted_tsens) / (weighted_tprec + weighted_tsens)
 
