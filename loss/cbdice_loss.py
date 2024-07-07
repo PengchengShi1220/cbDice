@@ -64,8 +64,8 @@ class CBDC_loss(torch.nn.Module):
             skel_pred = self.skeletonization_module(y_pred.unsqueeze(1)).squeeze(1)
             skel_true = self.skeletonization_module(y_true.unsqueeze(1).detach()).squeeze(1)
         else:
-            skel_pred = self.soft_skeletonize(y_pred.unsqueeze(1), self.iter).squeeze(1)
-            skel_true = self.soft_skeletonize(y_true.unsqueeze(1).detach(), self.iter).squeeze(1)
+            skel_pred = self.soft_skeletonize(y_pred.unsqueeze(1)).squeeze(1)
+            skel_true = self.soft_skeletonize(y_true.unsqueeze(1).detach()).squeeze(1)
 
         q_vl, q_slvl, q_sl = self.get_weights(y_true, skel_true, dim)
         q_vp, q_spvp, q_sp = self.get_weights(y_pred, skel_pred, dim)
@@ -135,8 +135,8 @@ class clMdice_loss(torch.nn.Module):
             skel_pred = self.skeletonization_module(y_pred.unsqueeze(1)).squeeze(1)
             skel_true = self.skeletonization_module(y_true.unsqueeze(1).detach()).squeeze(1)
         else:
-            skel_pred = self.soft_skeletonize(y_pred.unsqueeze(1), self.iter).squeeze(1)
-            skel_true = self.soft_skeletonize(y_true.unsqueeze(1).detach(), self.iter).squeeze(1)
+            skel_pred = self.soft_skeletonize(y_pred.unsqueeze(1)).squeeze(1)
+            skel_true = self.soft_skeletonize(y_true.unsqueeze(1).detach()).squeeze(1)
 
         q_vl, q_slvl, _ = self.get_weights(y_true, skel_true, dim)
         q_vp, q_spvp, _ = self.get_weights(y_pred, skel_pred, dim)
