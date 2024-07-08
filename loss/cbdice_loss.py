@@ -10,8 +10,12 @@ class CBDC_loss(torch.nn.Module):
         super(CBDC_loss, self).__init__()
         self.iter = iter_
         self.smooth = smooth
-        self.skeletonization_module = Skeletonize(probabilistic=False, simple_point_detection='EulerCharacteristic') # https://github.com/martinmenten/skeletonization-for-gradient-based-optimization
-        self.soft_skeletonize = SoftSkeletonize(num_iter=10) # https://github.com/jocpae/clDice/tree/master/cldice_loss/pytorch
+        
+        # Topology-preserving skeletonization: https://github.com/martinmenten/skeletonization-for-gradient-based-optimization
+        self.t_skeletonize = Skeletonize(probabilistic=False, simple_point_detection='EulerCharacteristic')
+        
+        # Morphological skeletonization: https://github.com/jocpae/clDice/tree/master/cldice_loss/pytorch
+        self.m_skeletonize = SoftSkeletonize(num_iter=10)
         
     def combine_tensors(self, A, B, C):
         A_C = A * C
@@ -47,7 +51,7 @@ class CBDC_loss(torch.nn.Module):
             skel_1_R2_norm[skel != 1] = 0
             return dist_map_norm, skel_R_norm, skel_1_R2_norm
 
-    def forward(self, y_pred, y_true, skeletonization_flage=False):
+    def forward(self, y_pred, y_true, t_skeletonize_flage=False):
         if len(y_true.shape) == 4:
             dim = 2
         elif len(y_true.shape) == 5:
@@ -60,12 +64,12 @@ class CBDC_loss(torch.nn.Module):
         y_pred = torch.where(y_pre > 0, 1, 0).float()
         y_true = torch.where(y_true > 0, 1, 0).squeeze(1).float()
 
-        if skeletonization_flage:
-            skel_pred = self.skeletonization_module(y_pred.unsqueeze(1)).squeeze(1)
-            skel_true = self.skeletonization_module(y_true.unsqueeze(1).detach()).squeeze(1)
+        if t_skeletonize_flage:
+            skel_pred = self.t_skeletonize(y_pred.unsqueeze(1)).squeeze(1)
+            skel_true = self.t_skeletonize(y_true.unsqueeze(1).detach()).squeeze(1)
         else:
-            skel_pred = self.soft_skeletonize(y_pred.unsqueeze(1)).squeeze(1)
-            skel_true = self.soft_skeletonize(y_true.unsqueeze(1).detach()).squeeze(1)
+            skel_pred = self.m_skeletonize(y_pred.unsqueeze(1)).squeeze(1)
+            skel_true = self.m_skeletonize(y_true.unsqueeze(1).detach()).squeeze(1)
 
         q_vl, q_slvl, q_sl = self.get_weights(y_true, skel_true, dim)
         q_vp, q_spvp, q_sp = self.get_weights(y_pred, skel_pred, dim)
@@ -81,8 +85,12 @@ class clMdice_loss(torch.nn.Module):
         super(clMdice_loss, self).__init__()
         self.iter = iter_
         self.smooth = smooth
-        self.skeletonization_module = Skeletonize(probabilistic=False, simple_point_detection='EulerCharacteristic')
-        self.soft_skeletonize = SoftSkeletonize(num_iter=10)
+        
+        # Topology-preserving skeletonization: https://github.com/martinmenten/skeletonization-for-gradient-based-optimization
+        self.t_skeletonize = Skeletonize(probabilistic=False, simple_point_detection='EulerCharacteristic')
+        
+        # Morphological skeletonization: https://github.com/jocpae/clDice/tree/master/cldice_loss/pytorch
+        self.m_skeletonize = SoftSkeletonize(num_iter=10)
         
     def combine_tensors(self, A, B, C):
         A_C = A * C
@@ -118,7 +126,7 @@ class clMdice_loss(torch.nn.Module):
             skel_1_R2_norm[skel != 1] = 0
             return dist_map_norm, skel_R_norm, skel_1_R2_norm
 
-    def forward(self, y_pred, y_true, skeletonization_flage=False):
+    def forward(self, y_pred, y_true, t_skeletonize_flage=False):
         if len(y_true.shape) == 4:
             dim = 2
         elif len(y_true.shape) == 5:
@@ -131,12 +139,12 @@ class clMdice_loss(torch.nn.Module):
         y_pred = torch.where(y_pre > 0, 1, 0).float()
         y_true = torch.where(y_true > 0, 1, 0).squeeze(1).float()
 
-        if skeletonization_flage:
-            skel_pred = self.skeletonization_module(y_pred.unsqueeze(1)).squeeze(1)
-            skel_true = self.skeletonization_module(y_true.unsqueeze(1).detach()).squeeze(1)
+        if t_skeletonize_flage:
+            skel_pred = self.t_skeletonize(y_pred.unsqueeze(1)).squeeze(1)
+            skel_true = self.t_skeletonize(y_true.unsqueeze(1).detach()).squeeze(1)
         else:
-            skel_pred = self.soft_skeletonize(y_pred.unsqueeze(1)).squeeze(1)
-            skel_true = self.soft_skeletonize(y_true.unsqueeze(1).detach()).squeeze(1)
+            skel_pred = self.m_skeletonize(y_pred.unsqueeze(1)).squeeze(1)
+            skel_true = self.m_skeletonize(y_true.unsqueeze(1).detach()).squeeze(1)
 
         q_vl, q_slvl, _ = self.get_weights(y_true, skel_true, dim)
         q_vp, q_spvp, _ = self.get_weights(y_pred, skel_pred, dim)
