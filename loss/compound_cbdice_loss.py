@@ -30,7 +30,7 @@ class DC_and_CE_and_CBDC_loss(nn.Module):
         self.dc = dice_class(apply_nonlin=softmax_helper_dim1, **soft_dice_kwargs)
         self.cbdice = CBDC_loss(**cbdc_kwargs)
 
-    def forward(self, net_output: torch.Tensor, target: torch.Tensor, skeletonization_flage=True):
+    def forward(self, net_output: torch.Tensor, target: torch.Tensor, t_skeletonize_flage=True):
         """
         target must be b, c, x, y(, z) with c=1
         :param net_output:
@@ -55,7 +55,7 @@ class DC_and_CE_and_CBDC_loss(nn.Module):
         ce_loss = self.ce(net_output, target[:, 0].long()) \
             if self.weight_ce != 0 and (self.ignore_label is None or num_fg > 0) else 0
 
-        cbdice_loss = self.cbdice(net_output, target, skeletonization_flage=skeletonization_flage) if self.weight_cbdice != 0 else 0
+        cbdice_loss = self.cbdice(net_output, target, t_skeletonize_flage=t_skeletonize_flage) if self.weight_cbdice != 0 else 0
 
         result = self.weight_ce * ce_loss + self.weight_dice * (dc_loss + 1) + self.weight_cbdice * cbdice_loss
         result = result / (self.weight_ce + self.weight_dice + self.weight_cbdice)
@@ -86,7 +86,7 @@ class DC_and_CE_and_CL_M_DC_loss(nn.Module):
         self.dc = dice_class(apply_nonlin=softmax_helper_dim1, **soft_dice_kwargs)
         self.clMdice = clMdice_loss(**cbdc_kwargs)
 
-    def forward(self, net_output: torch.Tensor, target: torch.Tensor, skeletonization_flage=True):
+    def forward(self, net_output: torch.Tensor, target: torch.Tensor, t_skeletonize_flage=True):
         """
         target must be b, c, x, y(, z) with c=1
         :param net_output:
@@ -111,7 +111,7 @@ class DC_and_CE_and_CL_M_DC_loss(nn.Module):
         ce_loss = self.ce(net_output, target[:, 0].long()) \
             if self.weight_ce != 0 and (self.ignore_label is None or num_fg > 0) else 0
 
-        clMdice_loss = self.clMdice(net_output, target, skeletonization_flage=skeletonization_flage) if self.weight_clMdice != 0 else 0
+        clMdice_loss = self.clMdice(net_output, target, t_skeletonize_flage=t_skeletonize_flage) if self.weight_clMdice != 0 else 0
 
         result = self.weight_ce * ce_loss + self.weight_dice * (dc_loss + 1) + self.weight_clMdice * clMdice_loss
         result = result / (self.weight_ce + self.weight_dice + self.weight_clMdice)
