@@ -21,3 +21,15 @@ pip install monai
 pip install cucim-cu12
 pip install cupy==12.3
 ```
+
+## Citation
+If you use cbDice in your research, please cite:
+
+```
+@article{shi2024centerline,
+  title={Centerline Boundary Dice Loss for Vascular Segmentation},
+  author={Shi, Pengcheng and Hu, Jiesi and Yang, Yanwu and Gao, Zilve and Liu, Wei and Ma, Ting},
+  journal={arXiv preprint arXiv:2407.01517},
+  year={2024}
+}
+```
