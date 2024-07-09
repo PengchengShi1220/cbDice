@@ -16,13 +16,6 @@ class CLDC_loss(torch.nn.Module):
         self.m_skeletonize = SoftSkeletonize(num_iter=iter_)
 
     def forward(self, y_pred, y_true, t_skeletonize_flage=False):
-        if len(y_true.shape) == 4:
-            dim = 2
-        elif len(y_true.shape) == 5:
-            dim = 3
-        else:
-            raise ValueError("y_true should be 4D or 5D tensor.")
-
         y_pred_fore = y_pred[:, 1:]
         y_pred_fore = torch.max(y_pred_fore, dim=1, keepdim=True)[0] # C foreground channels -> 1 channel
         y_pred_binary = torch.cat([y_pred[:, :1], y_pred_fore], dim=1)
