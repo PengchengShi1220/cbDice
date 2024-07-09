@@ -6,16 +6,15 @@ from nnunetv2.training.loss.skeletonize import Skeletonize
 from nnunetv2.training.loss.soft_skeleton import SoftSkeletonize
 
 class CBDC_loss(torch.nn.Module):
-    def __init__(self, iter_=3, smooth = 1.):
+    def __init__(self, iter_=10, smooth = 1.):
         super(CBDC_loss, self).__init__()
-        self.iter = iter_
         self.smooth = smooth
         
         # Topology-preserving skeletonization: https://github.com/martinmenten/skeletonization-for-gradient-based-optimization
         self.t_skeletonize = Skeletonize(probabilistic=False, simple_point_detection='EulerCharacteristic')
         
         # Morphological skeletonization: https://github.com/jocpae/clDice/tree/master/cldice_loss/pytorch
-        self.m_skeletonize = SoftSkeletonize(num_iter=10)
+        self.m_skeletonize = SoftSkeletonize(num_iter=iter_)
         
     def combine_tensors(self, A, B, C):
         A_C = A * C
@@ -83,16 +82,15 @@ class CBDC_loss(torch.nn.Module):
         return cb_dice
     
 class clMdice_loss(torch.nn.Module):
-    def __init__(self, iter_=3, smooth = 1.):
+    def __init__(self, iter_=10, smooth = 1.):
         super(clMdice_loss, self).__init__()
-        self.iter = iter_
         self.smooth = smooth
         
         # Topology-preserving skeletonization: https://github.com/martinmenten/skeletonization-for-gradient-based-optimization
         self.t_skeletonize = Skeletonize(probabilistic=False, simple_point_detection='EulerCharacteristic')
         
         # Morphological skeletonization: https://github.com/jocpae/clDice/tree/master/cldice_loss/pytorch
-        self.m_skeletonize = SoftSkeletonize(num_iter=10)
+        self.m_skeletonize = SoftSkeletonize(num_iter=iter_)
         
     def combine_tensors(self, A, B, C):
         A_C = A * C
