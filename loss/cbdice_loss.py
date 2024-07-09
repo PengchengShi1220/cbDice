@@ -59,9 +59,11 @@ class CBDC_loss(torch.nn.Module):
         else:
             raise ValueError("y_true should be 4D or 5D tensor.")
 
-        y_prob = torch.softmax(y_pred, 1)
-        y_pre = torch.argmax(y_prob, dim=1)
-        y_pred = torch.where(y_pre > 0, 1, 0).float()
+        y_pred_fore = y_pred[:, 1:]
+        y_pred_fore = torch.max(y_pred_fore, dim=1, keepdim=True)[0] # C foreground channels -> 1 channel
+        y_pred_binary = torch.cat([y_pred[:, :1], y_pred_fore], dim=1)
+        y_prob_binary = torch.softmax(y_pred_binary, 1)
+        y_pred = torch.where(y_prob_binary[:, 1] > 0.5, 1, 0).float()
         y_true = torch.where(y_true > 0, 1, 0).squeeze(1).float()
 
         if t_skeletonize_flage:
@@ -134,9 +136,11 @@ class clMdice_loss(torch.nn.Module):
         else:
             raise ValueError("y_true should be 4D or 5D tensor.")
 
-        y_prob = torch.softmax(y_pred, 1)
-        y_pre = torch.argmax(y_prob, dim=1)
-        y_pred = torch.where(y_pre > 0, 1, 0).float()
+        y_pred_fore = y_pred[:, 1:]
+        y_pred_fore = torch.max(y_pred_fore, dim=1, keepdim=True)[0] # C foreground channels -> 1 channel
+        y_pred_binary = torch.cat([y_pred[:, :1], y_pred_fore], dim=1)
+        y_prob_binary = torch.softmax(y_pred_binary, 1)
+        y_pred = torch.where(y_prob_binary[:, 1] > 0.5, 1, 0).float()
         y_true = torch.where(y_true > 0, 1, 0).squeeze(1).float()
 
         if t_skeletonize_flage:
