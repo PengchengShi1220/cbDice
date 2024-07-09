@@ -12,7 +12,7 @@ class nnUNetTrainer_CE_DC_CLDC_NoDeepSupervision(nnUNetTrainerNoDeepSupervision)
         lambda_ce = lambda_dice + lambda_cldice
 
         loss = DC_and_CE_and_CLDC_loss({'batch_dice': self.configuration_manager.batch_dice, 'smooth': 1e-5, 'do_bg': False, 'ddp': self.is_ddp}, {},
-                                    {'iter_': 3, 'smooth': 1e-3},
+                                    {'iter_': 10, 'smooth': 1e-3},
                                     weight_ce=lambda_ce, weight_dice=lambda_dice, weight_cldice=lambda_cldice, ignore_label=self.label_manager.ignore_label, dice_class=MemoryEfficientSoftDiceLoss)
 
         self.print_to_log_file("lambda_cldice: %s" % str(lambda_cldice))
