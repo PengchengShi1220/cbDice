@@ -12,7 +12,7 @@ class nnUNetTrainer_SwinUNETR_NoDeepSupervision_CE_DC_CL_M_DC(nnUNetTrainer_Swin
         lambda_ce = lambda_dice + lambda_clMdice
 
         loss = DC_and_CE_and_CL_M_DC_loss({'batch_dice': self.configuration_manager.batch_dice, 'smooth': 1e-5, 'do_bg': False, 'ddp': self.is_ddp}, {},
-                                    {'iter_': 3, 'smooth': 1e-3},
+                                    {'iter_': 10, 'smooth': 1e-3},
                                     weight_ce=lambda_ce, weight_dice=lambda_dice, weight_clMdice=lambda_clMdice, ignore_label=self.label_manager.ignore_label, dice_class=MemoryEfficientSoftDiceLoss)
 
         self.print_to_log_file("lambda_clMdice: %s" % str(lambda_clMdice))
