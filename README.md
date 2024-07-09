@@ -22,6 +22,15 @@ pip install cucim-cu12
 pip install cupy==12.3
 ```
 
+## Differentiable Skeletonization
+
+We provide two options for skeletonization: [Topology-preserving skeletonization](https://github.com/martinmenten/skeletonization-for-gradient-based-optimization) and [Morphological skeletonization](https://github.com/jocpae/clDice/tree/master/cldice_loss/pytorch).
+
+According to the paper "a skeletonization algorithm for gradient-based optimization" (ICCV, 2023), Table 1:
+
+- **Topology-preserving skeletonization**: [skeletonize.py](https://github.com/PengchengShi1220/cbDice/blob/main/loss/skeletonize.py). This method ensures high topological accuracy but operates at a slower speed.
+- **Morphological skeletonization**: [soft_skeleton.py](https://github.com/PengchengShi1220/cbDice/blob/main/loss/soft_skeleton.py). This method runs faster but offers lower topological accuracy.
+
 ## Citation
 If you use cbDice in your research, please cite:
 
