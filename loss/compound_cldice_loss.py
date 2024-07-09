@@ -30,7 +30,7 @@ class DC_and_CE_and_CLDC_loss(nn.Module):
         self.dc = dice_class(apply_nonlin=softmax_helper_dim1, **soft_dice_kwargs)
         self.cldice = CLDC_loss(**cldc_kwargs)
 
-    def forward(self, net_output: torch.Tensor, target: torch.Tensor, t_skeletonize_flage=True):
+    def forward(self, net_output: torch.Tensor, target: torch.Tensor, t_skeletonize_flage=False):
         """
         target must be b, c, x, y(, z) with c=1
         :param net_output:
