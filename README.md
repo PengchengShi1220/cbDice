@@ -14,7 +14,7 @@ cbDice consists of several main components. The following links will take you di
 
 ## Installation Guide
 
-Install [cuCIM](https://github.com/rapidsai/cucim) and [cupy](https://github.com/cupy/cupy) for GPU-Accelerated Distance Transform in [MONAI](https://github.com/Project-MONAI/MONAI/blob/64ea76d83a92b7cf7f13c8f93498d50037c3324c/monai/transforms/utils.py#L2193):
+Install [cuCIM](https://github.com/rapidsai/cucim) and [cupy](https://github.com/cupy/cupy) for GPU-accelerated distance transform in [MONAI](https://github.com/Project-MONAI/MONAI/blob/64ea76d83a92b7cf7f13c8f93498d50037c3324c/monai/transforms/utils.py#L2193):
 
 ```bash
 pip install monai
