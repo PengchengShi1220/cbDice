@@ -1,6 +1,4 @@
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 from nnunetv2.training.loss.skeletonize import Skeletonize
 from nnunetv2.training.loss.soft_skeleton import SoftSkeletonize
 
