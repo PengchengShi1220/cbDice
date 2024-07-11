@@ -139,6 +139,6 @@ def get_weights(mask_input, skel_input, dim, prob_flag=True):
     I_norm[skel == 0] = 0 # 0 for non-skeleton pixels
 
     if prob_flag:
-        return dist_map_norm * mask_prob, skel_R_norm * skel, I_norm * skel_prob # no need prob for q_spvp
+        return dist_map_norm * mask_prob, skel_R_norm * mask_prob, I_norm * skel_prob
     else:
         return dist_map_norm * mask, skel_R_norm * skel, I_norm * skel
