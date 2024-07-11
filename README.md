@@ -33,7 +33,6 @@ y_pred_fore = torch.max(y_pred_fore, dim=1, keepdim=True)[0]  # C foreground cha
 y_pred_binary = torch.cat([y_pred[:, :1], y_pred_fore], dim=1)
 y_prob_binary = torch.softmax(y_pred_binary, 1)
 y_pred_prob = y_prob_binary[:, 1]  # predicted probability map of foreground
-y_true = torch.where(y_true > 0, 1, 0).squeeze(1).float()  # ground truth of foreground
 ```
 
 ## Differentiable Skeletonization
