@@ -54,6 +54,7 @@ class clMdice_loss(torch.nn.Module):
         
         # Topology-preserving skeletonization: https://github.com/martinmenten/skeletonization-for-gradient-based-optimization
         self.t_skeletonize = Skeletonize(probabilistic=False, simple_point_detection='EulerCharacteristic')
+        self.t_skeletonize_prob = Skeletonize(probabilistic=True, simple_point_detection='EulerCharacteristic')
         
         # Morphological skeletonization: https://github.com/jocpae/clDice/tree/master/cldice_loss/pytorch
         self.m_skeletonize = SoftSkeletonize(num_iter=iter_)
