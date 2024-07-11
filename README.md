@@ -46,19 +46,19 @@ We provide two options for skeletonization:
 
 ## Weighted Mask and Skeleton Processing
 
-The `get_weights` function is used to apply weights to the mask and skeleton. If using ground truth (`y_true`), probabilities are not considered. However, for predictions (`pred`), probabilities must be taken into account.
+The [get_weights](https://github.com/PengchengShi1220/cbDice/blob/84390a18d2393bfab6f4b3da011cfa1c1d2ec2a1/loss/cbdice_loss.py#L104) function is used to apply weights to the mask and skeleton. If using ground truth (`y_true`), probabilities are not considered. However, for predictions (`pred`), probabilities must be taken into account.
 
 ### Processing Steps:
 
 1. **Distance Transform**:
-    - `mask_input` and `skel_input` are processed using `distance_transform_edt` to obtain `dist_map_norm`, `skel_R_norm`, and `I_norm`.
+    - `mask_input` and `skel_input` are processed using [distance_transform_edt](https://github.com/PengchengShi1220/cbDice/blob/84390a18d2393bfab6f4b3da011cfa1c1d2ec2a1/loss/cbdice_loss.py#L115) to obtain `dist_map_norm`, `skel_R_norm`, and `I_norm`.
 
 2. **Weight Calculation**:
     - `dist_map_norm` (Q_vp) and `skel_R_norm` (Q_spvp) are weighted by `mask_prob`.
     - `I_norm` (Q_sp) is weighted by `skel_prob`.
     - Probabilities are derived from the skeleton.
 
-For detailed implementation, see the `get_weights` function.
+For detailed implementation, see the [get_weights](https://github.com/PengchengShi1220/cbDice/blob/84390a18d2393bfab6f4b3da011cfa1c1d2ec2a1/loss/cbdice_loss.py#L104) function.
 
 If you have any issues or need further assistance, feel free to open an issue on our GitHub repository.
 
