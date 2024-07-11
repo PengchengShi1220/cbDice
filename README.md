@@ -47,12 +47,16 @@ We provide two options for skeletonization:
 
 The [get_weights](https://github.com/PengchengShi1220/cbDice/blob/84390a18d2393bfab6f4b3da011cfa1c1d2ec2a1/loss/cbdice_loss.py#L104) function is used to apply weights to the mask and skeleton. If using ground truth (`y_true`), probabilities are not considered. However, for predictions (`pred`), probabilities must be taken into account.
 
-### Processing Steps:
-- `mask_input` and `skel_input` are processed using the [distance_transform_edt](https://github.com/PengchengShi1220/cbDice/blob/84390a18d2393bfab6f4b3da011cfa1c1d2ec2a1/loss/cbdice_loss.py#L115) function to obtain `dist_map_norm`, `skel_R_norm`, and `I_norm`.
-- The distance maps are then multiplied by respective probabilities:
-  - `dist_map_norm` (denoted as \(Q_{vp}\)) is multiplied by `mask_prob`.
-  - `skel_R_norm` (denoted as \(Q_{spvp}\)) is multiplied by `mask_prob`.
-  - `I_norm` (denoted as \(Q_{sp}\)) is multiplied by `skel_prob`.
+### Processing Steps
+
+1. **Distance Transform Computation**:
+    - `mask_input` and `skel_input` are processed using the [distance_transform_edt](https://github.com/PengchengShi1220/cbDice/blob/84390a18d2393bfab6f4b3da011cfa1c1d2ec2a1/loss/cbdice_loss.py#L115) function to obtain `dist_map_norm`, `skel_R_norm`, and `I_norm`.
+
+2. **Probability Multiplication**:
+    - The distance maps are then multiplied by their respective probabilities:
+        - `dist_map_norm` (denoted as \(Q_{vp}\)) is multiplied by `mask_prob`.
+        - `skel_R_norm` (denoted as \(Q_{spvp}\)) is multiplied by `mask_prob`.
+        - `I_norm` (denoted as \(Q_{sp}\)) is multiplied by `skel_prob`.
 
 For detailed implementation, see the [get_weights](https://github.com/PengchengShi1220/cbDice/blob/84390a18d2393bfab6f4b3da011cfa1c1d2ec2a1/loss/cbdice_loss.py#L104) function.
 
