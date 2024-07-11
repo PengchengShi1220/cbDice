@@ -44,7 +44,7 @@ class CBDC_loss(torch.nn.Module):
         w_tsens = (torch.sum(torch.multiply(q_sl, q_vp))+self.smooth)/(torch.sum(combine_tensors(q_slvl, q_spvp, q_sl))+self.smooth)
 
         cb_dice = 1. - 2.0 * (w_tprec * w_tsens) / (w_tprec + w_tsens)
-        print("cb_dice: ", cb_dice)
+        
         return cb_dice
     
 class clMdice_loss(torch.nn.Module):
