@@ -142,4 +142,4 @@ def get_weights(mask_input, skel_input, dim, prob_flag=True):
     if prob_flag:
         return dist_map_norm * mask_prob, skel_R_norm * mask_prob, I_norm * skel_prob
     else:
-        return dist_map_norm * mask, skel_R_norm * skel, I_norm * skel
+        return dist_map_norm * mask, skel_R_norm * mask, I_norm * skel
