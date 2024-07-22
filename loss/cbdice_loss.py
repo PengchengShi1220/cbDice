@@ -3,9 +3,9 @@ from monai.transforms import distance_transform_edt
 from nnunetv2.training.loss.skeletonize import Skeletonize
 from nnunetv2.training.loss.soft_skeleton import SoftSkeletonize
 
-class CBDC_loss(torch.nn.Module):
+class SoftcbDiceLoss(torch.nn.Module):
     def __init__(self, iter_=10, smooth = 1.):
-        super(CBDC_loss, self).__init__()
+        super(SoftcbDiceLoss, self).__init__()
         self.smooth = smooth
         
         # Topology-preserving skeletonization: https://github.com/martinmenten/skeletonization-for-gradient-based-optimization
@@ -47,9 +47,9 @@ class CBDC_loss(torch.nn.Module):
         
         return cb_dice
     
-class clMdice_loss(torch.nn.Module):
+class SoftclMDiceLoss(torch.nn.Module):
     def __init__(self, iter_=10, smooth = 1.):
-        super(clMdice_loss, self).__init__()
+        super(SoftclMDiceLoss, self).__init__()
         self.smooth = smooth
         
         # Topology-preserving skeletonization: https://github.com/martinmenten/skeletonization-for-gradient-based-optimization
