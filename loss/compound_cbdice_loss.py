@@ -1,7 +1,7 @@
 import torch
 from nnunetv2.training.loss.dice import SoftDiceLoss
 from nnunetv2.training.loss.robust_ce_loss import RobustCrossEntropyLoss
-from nnunetv2.training.loss.cbdice_loss import CBDC_loss, clMdice_loss
+from nnunetv2.training.loss.cbdice_loss import SoftcbDiceLoss, SoftclMDiceLoss
 from nnunetv2.utilities.helpers import softmax_helper_dim1
 from torch import nn
 
@@ -28,7 +28,7 @@ class DC_and_CE_and_CBDC_loss(nn.Module):
 
         self.ce = RobustCrossEntropyLoss(**ce_kwargs)
         self.dc = dice_class(apply_nonlin=softmax_helper_dim1, **soft_dice_kwargs)
-        self.cbdice = CBDC_loss(**cbdc_kwargs)
+        self.cbdice = SoftcbDiceLoss(**cbdc_kwargs)
 
     def forward(self, net_output: torch.Tensor, target: torch.Tensor, t_skeletonize_flage=False):
         """
@@ -84,7 +84,7 @@ class DC_and_CE_and_CL_M_DC_loss(nn.Module):
 
         self.ce = RobustCrossEntropyLoss(**ce_kwargs)
         self.dc = dice_class(apply_nonlin=softmax_helper_dim1, **soft_dice_kwargs)
-        self.clMdice = clMdice_loss(**cbdc_kwargs)
+        self.clMdice = SoftclMDiceLoss(**cbdc_kwargs)
 
     def forward(self, net_output: torch.Tensor, target: torch.Tensor, t_skeletonize_flage=False):
         """
