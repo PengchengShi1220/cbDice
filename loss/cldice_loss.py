@@ -2,9 +2,9 @@ import torch
 from nnunetv2.training.loss.skeletonize import Skeletonize
 from nnunetv2.training.loss.soft_skeleton import SoftSkeletonize
 
-class CLDC_loss(torch.nn.Module):
+class SoftclDiceLoss(torch.nn.Module):
     def __init__(self, iter_=10, smooth = 1.):
-        super(CLDC_loss, self).__init__()
+        super(SoftclDiceLoss, self).__init__()
         self.smooth = smooth
         
         # Topology-preserving skeletonization: https://github.com/martinmenten/skeletonization-for-gradient-based-optimization
