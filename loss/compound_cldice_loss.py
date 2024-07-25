@@ -57,7 +57,6 @@ class DC_and_CE_and_CLDC_loss(nn.Module):
 
         cldice_loss = self.cldice(net_output, target, t_skeletonize_flage=t_skeletonize_flage) if self.weight_cldice != 0 else 0
 
-        result = self.weight_ce * ce_loss + self.weight_dice * (dc_loss + 1) + self.weight_cldice * cldice_loss
-        result = result / (self.weight_ce + self.weight_dice + self.weight_cldice)
+        result = self.weight_ce * ce_loss + self.weight_dice * dc_loss + self.weight_cldice * cldice_loss
         return result
 
