@@ -57,8 +57,7 @@ class DC_and_CE_and_CBDC_loss(nn.Module):
 
         cbdice_loss = self.cbdice(net_output, target, t_skeletonize_flage=t_skeletonize_flage) if self.weight_cbdice != 0 else 0
 
-        result = self.weight_ce * ce_loss + self.weight_dice * (dc_loss + 1) + self.weight_cbdice * cbdice_loss
-        result = result / (self.weight_ce + self.weight_dice + self.weight_cbdice)
+        result = self.weight_ce * ce_loss + self.weight_dice * dc_loss + self.weight_cbdice * cbdice_loss
         return result
 
 class DC_and_CE_and_CL_M_DC_loss(nn.Module):
@@ -113,6 +112,5 @@ class DC_and_CE_and_CL_M_DC_loss(nn.Module):
 
         clMdice_loss = self.clMdice(net_output, target, t_skeletonize_flage=t_skeletonize_flage) if self.weight_clMdice != 0 else 0
 
-        result = self.weight_ce * ce_loss + self.weight_dice * (dc_loss + 1) + self.weight_clMdice * clMdice_loss
-        result = result / (self.weight_ce + self.weight_dice + self.weight_clMdice)
+        result = self.weight_ce * ce_loss + self.weight_dice * dc_loss + self.weight_clMdice * clMdice_loss
         return result
