@@ -53,8 +53,7 @@ class DC_and_CE_loss(nn.Module):
         ce_loss = self.ce(net_output, target[:, 0].long()) \
             if self.weight_ce != 0 and (self.ignore_label is None or num_fg > 0) else 0
 
-        result = self.weight_ce * ce_loss + self.weight_dice * (dc_loss + 1)
-        result = result / (self.weight_ce + self.weight_dice)
+        result = self.weight_ce * ce_loss + self.weight_dice * dc_loss
         return result
     
 class DC_and_BCE_loss(nn.Module):
@@ -96,7 +95,7 @@ class DC_and_BCE_loss(nn.Module):
             ce_loss = (self.ce(net_output, target_regions) * mask).sum() / torch.clip(mask.sum(), min=1e-8)
         else:
             ce_loss = self.ce(net_output, target_regions)
-        result = self.weight_ce * ce_loss + self.weight_dice * (dc_loss + 1)
+        result = self.weight_ce * ce_loss + self.weight_dice * dc_loss
         return result
 
 
@@ -147,7 +146,7 @@ class DC_and_topk_loss(nn.Module):
         ce_loss = self.ce(net_output, target) \
             if self.weight_ce != 0 and (self.ignore_label is None or num_fg > 0) else 0
 
-        result = self.weight_ce * ce_loss + self.weight_dice * (dc_loss + 1)
+        result = self.weight_ce * ce_loss + self.weight_dice * dc_loss
         return result
 
 class BCE_loss(nn.Module):
@@ -272,7 +271,6 @@ class B_DoU_and_CE_loss(nn.Module):
             if self.weight_ce != 0 and (self.ignore_label is None or num_fg > 0) else 0
 
         result = self.weight_ce * ce_loss + self.weight_bdou * bdou_loss
-        result = result / (self.weight_ce + self.weight_bdou)
         return result
 
 class DC_CE_and_B_DoU_loss(nn.Module):
@@ -329,7 +327,6 @@ class DC_CE_and_B_DoU_loss(nn.Module):
         bdou_loss = self.bdou(net_output, target_dice) \
             if self.weight_bdou != 0 else 0
 
-        result = self.weight_ce * ce_loss + self.weight_dice * (dc_loss + 1) + self.weight_bdou * bdou_loss
-        result = result / (self.weight_ce + self.weight_dice + self.weight_bdou)
+        result = self.weight_ce * ce_loss + self.weight_dice * dc_loss + self.weight_bdou * bdou_loss
         return result
     
