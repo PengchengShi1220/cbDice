@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 
+# https://github.com/sunfan-bvb/BoundaryDoULoss/blob/main/TransUNet/utils.py
 class BoundaryDoULoss(nn.Module):
     def __init__(self, n_classes):
         super(BoundaryDoULoss, self).__init__()
