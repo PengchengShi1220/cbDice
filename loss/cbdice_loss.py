@@ -43,9 +43,9 @@ class SoftcbDiceLoss(torch.nn.Module):
         w_tprec = (torch.sum(torch.multiply(q_sp, q_vl))+self.smooth)/(torch.sum(combine_tensors(q_spvp, q_slvl, q_sp))+self.smooth)
         w_tsens = (torch.sum(torch.multiply(q_sl, q_vp))+self.smooth)/(torch.sum(combine_tensors(q_slvl, q_spvp, q_sl))+self.smooth)
 
-        cb_dice = 1. - 2.0 * (w_tprec * w_tsens) / (w_tprec + w_tsens)
+        cb_dice_loss = 1. - 2.0 * (w_tprec * w_tsens) / (w_tprec + w_tsens)
         
-        return cb_dice
+        return cb_dice_loss
     
 class SoftclMDiceLoss(torch.nn.Module):
     def __init__(self, iter_=10, smooth = 1.):
@@ -90,9 +90,9 @@ class SoftclMDiceLoss(torch.nn.Module):
         w_tprec = (torch.sum(torch.multiply(q_sp, q_vl))+self.smooth)/(torch.sum(combine_tensors(q_spvp, q_slvl, q_sp))+self.smooth)
         w_tsens = (torch.sum(torch.multiply(q_sl, q_vp))+self.smooth)/(torch.sum(combine_tensors(q_slvl, q_spvp, q_sl))+self.smooth)
 
-        cl_m_dice = 1. - 2.0 * (w_tprec * w_tsens) / (w_tprec + w_tsens)
+        cl_m_dice_loss = 1. - 2.0 * (w_tprec * w_tsens) / (w_tprec + w_tsens)
 
-        return cl_m_dice
+        return cl_m_dice_loss
 
 def combine_tensors(A, B, C):
     A_C = A * C
