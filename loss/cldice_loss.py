@@ -32,6 +32,6 @@ class SoftclDiceLoss(torch.nn.Module):
 
         tprec = (torch.sum(torch.multiply(skel_pred_prob, y_true))+self.smooth)/(torch.sum(skel_pred_prob)+self.smooth)    
         tsens = (torch.sum(torch.multiply(skel_true, y_pred_prob))+self.smooth)/(torch.sum(skel_true)+self.smooth)
-        cl_dice_loss = 1.- 2.0 * (tprec*tsens)/(tprec+tsens)
+        cl_dice_loss = - 2.0 * (tprec*tsens)/(tprec+tsens)
 
         return cl_dice_loss
