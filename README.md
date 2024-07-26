@@ -19,8 +19,14 @@ Install [cuCIM](https://github.com/rapidsai/cucim) and [cupy](https://github.com
 
 ```bash
 pip install monai
+
+# For CUDA 12.x
 pip install cucim-cu12
 pip install cupy==12.3
+
+# For CUDA 11.x
+pip install cucim-cu11
+pip install cupy-cuda11x
 ```
 
 ## Differentiable Binarization
