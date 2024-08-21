@@ -20,7 +20,7 @@ class nnUNetTrainer_CE_DC_CBDC(nnUNetTrainer):
         weights = weights / weights.sum()
         
         lambda_cbdice = 1.0
-        lambda_dice = 2.0
+        lambda_dice = 1.0
         lambda_ce = lambda_dice + lambda_cbdice
 
         loss = DC_and_CE_and_CBDC_loss({'batch_dice': self.configuration_manager.batch_dice, 'smooth': 1e-5, 'do_bg': False, 'ddp': self.is_ddp}, {},
