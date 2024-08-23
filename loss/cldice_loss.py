@@ -13,7 +13,7 @@ class SoftclDiceLoss(torch.nn.Module):
         # Morphological skeletonization: https://github.com/jocpae/clDice/tree/master/cldice_loss/pytorch
         self.m_skeletonize = SoftSkeletonize(num_iter=iter_)
 
-    def forward(self, y_pred, y_true, t_skeletonize_flage=True):
+    def forward(self, y_pred, y_true, t_skeletonize_flage=False):
         
         y_pred_fore = y_pred[:, 1:]
         y_pred_fore = torch.max(y_pred_fore, dim=1, keepdim=True)[0] # C foreground channels -> 1 channel
