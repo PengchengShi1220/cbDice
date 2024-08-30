@@ -70,11 +70,11 @@ The following time comparisons were conducted using Deep Supervision and NoMirro
 
 | Configuration             | Trainer                                             | Skeletonization Type     | Epoch Time (s) |
 |---------------------------|-----------------------------------------------------|--------------------------|----------------|
-| Default (CE_DC)           | nnUNetTrainerNoMirroring_3d_fullres                 | N/A                      | ~70.3          |
-| CE_DC_CLDC                | nnUNetTrainer_CE_DC_CLDC_NoMirroring_3d_fullres     | Morphological (iter_=10)  | ~86.9          |
-| CE_DC_CBDC                | nnUNetTrainer_CE_DC_CBDC_NoMirroring_3d_fullres     | Morphological (iter_=10)  | ~92.6          |
-| CE_DC_CLDC                | nnUNetTrainer_CE_DC_CLDC_NoMirroring_3d_fullres     | Topology-Preserving       | ~318.2         |
-| CE_DC_CBDC                | nnUNetTrainer_CE_DC_CBDC_NoMirroring_3d_fullres     | Topology-Preserving       | ~324.0         |
+| Default (CE_DC)           | nnUNetTrainerNoMirroring_3d_fullres                 | N/A                      | 70.3          |
+| CE_DC_CLDC                | nnUNetTrainer_CE_DC_CLDC_NoMirroring_3d_fullres     | Morphological (iter_=10)  | 86.9          |
+| CE_DC_CBDC                | nnUNetTrainer_CE_DC_CBDC_NoMirroring_3d_fullres     | Morphological (iter_=10)  | 92.6          |
+| CE_DC_CLDC                | nnUNetTrainer_CE_DC_CLDC_NoMirroring_3d_fullres     | Topology-Preserving       | 318.2         |
+| CE_DC_CBDC                | nnUNetTrainer_CE_DC_CBDC_NoMirroring_3d_fullres     | Topology-Preserving       | 324.0         |
 
 If you have any issues or need further assistance, feel free to open an issue on our GitHub repository.
 
