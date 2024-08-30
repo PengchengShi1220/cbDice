@@ -64,7 +64,7 @@ The [get_weights](https://github.com/PengchengShi1220/cbDice/blob/db9ca668c5d504
 
 For detailed implementation, see the [get_weights](https://github.com/PengchengShi1220/cbDice/blob/db9ca668c5d5041b92e704e922082c1f32f84e49/loss/cbdice_loss.py#L113) function.
 
-### Time Comparisons
+## Time Comparisons
 
 The following time comparisons were conducted using Deep Supervision and NoMirroring on an NVIDIA RTX 3090 24GB GPU. The environment was set up with Python 3.10.9, PyTorch 2.2.2, and CUDA 12.1. Additionally, cucim-cu12 and cupy==12.3 were utilized for GPU-accelerated distance transforms in [MONAI](https://github.com/Project-MONAI/MONAI/blob/64ea76d83a92b7cf7f13c8f93498d50037c3324c/monai/transforms/utils.py#L2193). The dataset used was TopCoW2023, with `3d_fullres` as the resolution, a batch size of 2, and a patch size of [80, 192, 160].
 
