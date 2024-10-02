@@ -47,7 +47,7 @@ We provide two options for skeletonization:
 
 1. **[Topology-preserving skeletonization](https://github.com/martinmenten/skeletonization-for-gradient-based-optimization)**: This method ensures high topological accuracy but operates at a slower speed. Refer to [skeletonize.py](https://github.com/PengchengShi1220/cbDice/blob/main/loss/skeletonize.py) for implementation details. This method is based on the paper "A Skeletonization Algorithm for Gradient-based Optimization" (ICCV, 2023).
 
-2. **[Morphological skeletonization](https://github.com/jocpae/clDice)**: This method runs faster but offers lower topological accuracy. Refer to [soft_skeleton.py](https://github.com/PengchengShi1220/cbDice/blob/main/loss/soft_skeleton.py) for implementation details. This method is also discussed in the paper mentioned above.
+2. **[Morphological skeletonization](https://github.com/jocpae/clDice)**: This method runs faster but offers lower topological accuracy. Refer to [soft_skeleton.py](https://github.com/PengchengShi1220/cbDice/blob/main/loss/soft_skeleton.py) for implementation details. This method is discussed in the paper "clDice - a Novel Topology-Preserving Loss Function for Tubular Structure Segmentation" (CVPR, 2021).
 
 ## Weighted Mask and Skeleton Processing
 
