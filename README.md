@@ -82,10 +82,12 @@ If you have any issues or need further assistance, feel free to open an issue on
 If you use cbDice in your research, please cite:
 
 ```
-@article{shi2024centerline,
+@inproceedings{shi2024centerline,
   title={Centerline Boundary Dice Loss for Vascular Segmentation},
   author={Shi, Pengcheng and Hu, Jiesi and Yang, Yanwu and Gao, Zilve and Liu, Wei and Ma, Ting},
-  journal={arXiv preprint arXiv:2407.01517},
-  year={2024}
+  booktitle={International Conference on Medical Image Computing and Computer-Assisted Intervention},
+  pages={46--56},
+  year={2024},
+  organization={Springer}
 }
 ```
