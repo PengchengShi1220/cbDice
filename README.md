@@ -6,6 +6,28 @@
 * **(October 13, 2023):** :tada: Our solution, powered by cbDice, won second place 🥈 in FinalTest-CTA-MultiClass and fourth place in FinalTest-MRA-MultiClass at the MICCAI 2023 [TopCoW 🐮](https://topcow23.grand-challenge.org/evaluation/finaltest-cta-multiclass/leaderboard) Challenge.
 * **(October 12, 2023):** Released part of the centerline boundary loss codes for [nnU-Net V2](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.2).
 
+## Important Update: `I_norm` Calculation Method Changed
+
+The `I_norm` calculation in [`cbdice_loss.py`](https://github.com/PengchengShi1220/cbDice/blob/main/loss/cbdice_loss.py) has been updated:
+
+- **New Method**: Now using a **subtraction-based inverse (linear)** approach:
+  ```python
+  if dim == 2:
+      I_norm[i] = (skel_radius_max - skel_i + skel_radius_min) / skel_radius_max
+  else:
+      I_norm[i] = ((skel_radius_max - skel_i + skel_radius_min) / skel_radius_max) ** 2
+  ```
+
+- **Previous Method**: The old implementation used a **multiplicative inverse (nonlinear)** approach:
+  ```python
+  # if dim == 2:
+  #     I_norm[i] = (1 + smooth) / (skel_R_norm[i] + smooth)
+  # else:
+  #     I_norm[i] = (1 + smooth) / (skel_R_norm[i] ** 2 + smooth)
+  ```
+
+**Reason for Change**: The linear method has shown better performance in practice.
+
 ## Overview
 cbDice consists of several main components. The following links will take you directly to the core parts of the codebase:
 
