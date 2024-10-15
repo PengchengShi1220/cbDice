@@ -18,7 +18,7 @@ The `I_norm` calculation in [`cbdice_loss.py`](https://github.com/PengchengShi12
       I_norm[i] = ((skel_radius_max - skel_i + skel_radius_min) / skel_radius_max) ** 2
   ```
 
-- **Previous Method**: The old implementation used a **multiplicative inverse (nonlinear)** approach:
+- **Previous Method**: The old implementation used a **division-based inverse (nonlinear)** approach:
   ```python
   # if dim == 2:
   #     I_norm[i] = (1 + smooth) / (skel_R_norm[i] + smooth)
