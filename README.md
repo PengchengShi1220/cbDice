@@ -6,7 +6,7 @@
 * **(October 13, 2023):** :tada: Our solution, powered by cbDice, won second place 🥈 in FinalTest-CTA-MultiClass and fourth place in FinalTest-MRA-MultiClass at the MICCAI 2023 [TopCoW 🐮](https://topcow23.grand-challenge.org/evaluation/finaltest-cta-multiclass/leaderboard) Challenge.
 * **(October 12, 2023):** Released part of the centerline boundary loss codes for [nnU-Net V2](https://github.com/MIC-DKFZ/nnUNet/releases/tag/v2.2).
 
-## Important Update: Modified `I_norm` Calculation Implementation
+## Important Update:
 
 The `I_norm` calculation in [`cbdice_loss.py`](https://github.com/PengchengShi1220/cbDice/blob/main/loss/cbdice_loss.py) has been updated:
 
