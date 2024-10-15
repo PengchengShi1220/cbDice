@@ -131,19 +131,28 @@ def get_weights(mask_input, skel_input, dim, prob_flag=True):
 
     dist_map_norm = torch.zeros_like(distances, dtype=torch.float32)
     skel_R_norm = torch.zeros_like(skel_radius, dtype=torch.float32)
+    I_norm = torch.zeros_like(mask, dtype=torch.float32)
     for i in range(skel_radius.shape[0]):
         distances_i = distances[i]
         skel_i = skel_radius[i]
         skel_radius_max = max(skel_i.max(), 1)
+        skel_radius_min = max(skel_i.min(), 1)
     
         distances_i[distances_i > skel_radius_max] = skel_radius_max
         dist_map_norm[i] = distances_i / skel_radius_max
         skel_R_norm[i] = skel_i / skel_radius_max
 
-    if dim == 2:
-        I_norm = (1 + smooth) / (skel_R_norm + smooth) # weight for skel
-    else:
-        I_norm = (1 + smooth) / (skel_R_norm ** 2 + smooth)
+        # subtraction-based inverse (linear)：
+        if dim == 2:
+            I_norm[i] = (skel_radius_max - skel_i + skel_radius_min) / skel_radius_max
+        else:
+            I_norm[i] = ((skel_radius_max - skel_i + skel_radius_min) / skel_radius_max) ** 2
+
+        # multiplicative inverse (nonlinear):
+        # if dim == 2:
+        #     I_norm[i] = (1 + smooth) / (skel_R_norm[i] + smooth) # weight for skel
+        # else:
+        #     I_norm[i] = (1 + smooth) / (skel_R_norm[i] ** 2 + smooth)
 
     I_norm[skel == 0] = 0 # 0 for non-skeleton pixels
 
