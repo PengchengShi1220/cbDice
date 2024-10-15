@@ -148,7 +148,7 @@ def get_weights(mask_input, skel_input, dim, prob_flag=True):
         else:
             I_norm[i] = ((skel_radius_max - skel_i + skel_radius_min) / skel_radius_max) ** 2
 
-        # multiplicative inverse (nonlinear):
+        # division-based inverse (nonlinear):
         # if dim == 2:
         #     I_norm[i] = (1 + smooth) / (skel_R_norm[i] + smooth) # weight for skel
         # else:
