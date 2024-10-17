@@ -1,5 +1,5 @@
 # Centerline Boundary Dice Loss for Vascular Segmentation
-- 📃 [**Paper**](https://arxiv.org/abs/2407.01517)
+- 📃 [**Paper**](https://arxiv.org/abs/2407.01517) | [**poster**](https://github.com/PengchengShi1220/cbDice/blob/main/MICCAI2024-Poster.pdf) | 
 
 ## :bulb: News
 * **(July 2, 2024):** Accepted by MICCAI 2024, updated full codebase.
