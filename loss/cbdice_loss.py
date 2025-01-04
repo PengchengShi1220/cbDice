@@ -15,6 +15,14 @@ class SoftcbDiceLoss(torch.nn.Module):
         self.m_skeletonize = SoftSkeletonize(num_iter=iter_)
 
     def forward(self, y_pred, y_true, t_skeletonize_flage=False):
+        """
+        Forward pass for the loss function.
+        
+        Args:
+            y_pred (torch.Tensor): Network output with shape (b, c, x, y(, z)).
+            y_true (torch.Tensor): Ground truth labels with shape (b, 1, x, y(, z)). No one-hot encoding required.
+            t_skeletonize_flag (bool, optional): Enable Topology-preserving skeletonization. Defaults to False.
+        """
         if len(y_true.shape) == 4:
             dim = 2
         elif len(y_true.shape) == 5:
