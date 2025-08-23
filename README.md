@@ -44,7 +44,7 @@ pip install monai
 
 # For CUDA 12.x
 pip install cucim-cu12
-pip install cupy==12.3
+pip install cupy-cuda12x
 
 # For CUDA 11.x
 pip install cucim-cu11
