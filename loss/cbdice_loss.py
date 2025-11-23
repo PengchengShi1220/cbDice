@@ -1,7 +1,7 @@
 import torch
 from monai.transforms import distance_transform_edt
-from nnunetv2.training.loss.skeletonize import Skeletonize
-from nnunetv2.training.loss.soft_skeleton import SoftSkeletonize
+from skeletonize import Skeletonize
+from soft_skeleton import SoftSkeletonize
 
 class SoftcbDiceLoss(torch.nn.Module):
     def __init__(self, iter_=10, smooth = 1.):
