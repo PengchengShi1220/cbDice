@@ -85,11 +85,18 @@ class SoftclMDiceLoss(torch.nn.Module):
         else:
             raise ValueError("y_true should be 4D or 5D tensor.")
 
-        y_pred_fore = y_pred[:, 1:]
-        y_pred_fore = torch.max(y_pred_fore, dim=1, keepdim=True)[0] # C foreground channels -> 1 channel
-        y_pred_binary = torch.cat([y_pred[:, :1], y_pred_fore], dim=1)
-        y_prob_binary = torch.softmax(y_pred_binary, 1)
-        y_pred_prob = y_prob_binary[:, 1] # predicted probability map of foreground
+        # handle 1-channel (Binary/Sigmoid) vs multi-channel (Softmax)
+        if y_pred.shape[1] == 1:
+            # binary case: apply sigmoid directly
+            y_pred_prob = torch.sigmoid(y_pred)
+            y_pred_prob = y_pred_prob.squeeze(1) # shape becomes (B, X, Y, Z)
+        else:
+            # multiclass case
+            y_pred_fore = y_pred[:, 1:]
+            y_pred_fore = torch.max(y_pred_fore, dim=1, keepdim=True)[0] 
+            y_pred_binary = torch.cat([y_pred[:, :1], y_pred_fore], dim=1)
+            y_prob_binary = torch.softmax(y_pred_binary, 1)
+            y_pred_prob = y_prob_binary[:, 1]
         
         with torch.no_grad():
             y_true = torch.where(y_true > 0, 1, 0).squeeze(1).float() # ground truth of foreground
