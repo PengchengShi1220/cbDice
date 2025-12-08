@@ -22,9 +22,8 @@ class SoftcbDiceLoss(torch.nn.Module):
         else:
             raise ValueError("y_true should be 4D or 5D tensor.")
 
-        # handle 1-channel (Binary/Sigmoid) vs multi-channel (Softmax)
+        # handle 1-channel for binary segmentation if sigmoid has been used
         if y_pred.shape[1] == 1:
-            # binary case: apply sigmoid directly
             y_pred_prob = torch.sigmoid(y_pred)
             y_pred_prob = y_pred_prob.squeeze(1) # shape becomes (B, X, Y, Z)
         else:
