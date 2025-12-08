@@ -8,36 +8,38 @@ class SoftcbDiceLoss(torch.nn.Module):
         super(SoftcbDiceLoss, self).__init__()
         self.smooth = smooth
         
-        # Topology-preserving skeletonization
+        # Topology-preserving skeletonization: https://github.com/martinmenten/skeletonization-for-gradient-based-optimization
         self.t_skeletonize = Skeletonize(probabilistic=False, simple_point_detection='EulerCharacteristic')
         
-        # Morphological skeletonization
+        # Morphological skeletonization: https://github.com/jocpae/clDice/tree/master/cldice_loss/pytorch
         self.m_skeletonize = SoftSkeletonize(num_iter=iter_)
 
     def forward(self, y_pred, y_true, t_skeletonize_flage=False):
+        """
+        Forward pass for the loss function.
+        
+        Args:
+            y_pred (torch.Tensor): Network output with shape (b, c, x, y(, z)).
+            y_true (torch.Tensor): Ground truth labels with shape (b, 1, x, y(, z)). No one-hot encoding required.
+            t_skeletonize_flag (bool, optional): Enable Topology-preserving skeletonization. Defaults to False.
+        """
         if len(y_true.shape) == 4:
             dim = 2
         elif len(y_true.shape) == 5:
             dim = 3
         else:
             raise ValueError("y_true should be 4D or 5D tensor.")
-
-        # handle 1-channel for binary segmentation if sigmoid has been used
-        if y_pred.shape[1] == 1:
-            y_pred_prob = torch.sigmoid(y_pred)
-            y_pred_prob = y_pred_prob.squeeze(1) # shape becomes (B, X, Y, Z)
-        else:
-            # multiclass case
-            y_pred_fore = y_pred[:, 1:]
-            y_pred_fore = torch.max(y_pred_fore, dim=1, keepdim=True)[0] 
-            y_pred_binary = torch.cat([y_pred[:, :1], y_pred_fore], dim=1)
-            y_prob_binary = torch.softmax(y_pred_binary, 1)
-            y_pred_prob = y_prob_binary[:, 1] 
+        
+        y_pred_fore = y_pred[:, 1:]
+        y_pred_fore = torch.max(y_pred_fore, dim=1, keepdim=True)[0] # C foreground channels -> 1 channel
+        y_pred_binary = torch.cat([y_pred[:, :1], y_pred_fore], dim=1)
+        y_prob_binary = torch.softmax(y_pred_binary, 1)
+        y_pred_prob = y_prob_binary[:, 1] # predicted probability map of foreground
         
         with torch.no_grad():
             y_true = torch.where(y_true > 0, 1, 0).squeeze(1).float() # ground truth of foreground
             y_pred_hard = (y_pred_prob > 0.5).float()
-            
+        
             if t_skeletonize_flage:
                 skel_pred_hard = self.t_skeletonize(y_pred_hard.unsqueeze(1)).squeeze(1)
                 skel_true = self.t_skeletonize(y_true.unsqueeze(1)).squeeze(1)
@@ -84,18 +86,11 @@ class SoftclMDiceLoss(torch.nn.Module):
         else:
             raise ValueError("y_true should be 4D or 5D tensor.")
 
-        # handle 1-channel (Binary/Sigmoid) vs multi-channel (Softmax)
-        if y_pred.shape[1] == 1:
-            # binary case: apply sigmoid directly
-            y_pred_prob = torch.sigmoid(y_pred)
-            y_pred_prob = y_pred_prob.squeeze(1) # shape becomes (B, X, Y, Z)
-        else:
-            # multiclass case
-            y_pred_fore = y_pred[:, 1:]
-            y_pred_fore = torch.max(y_pred_fore, dim=1, keepdim=True)[0] 
-            y_pred_binary = torch.cat([y_pred[:, :1], y_pred_fore], dim=1)
-            y_prob_binary = torch.softmax(y_pred_binary, 1)
-            y_pred_prob = y_prob_binary[:, 1]
+        y_pred_fore = y_pred[:, 1:]
+        y_pred_fore = torch.max(y_pred_fore, dim=1, keepdim=True)[0] # C foreground channels -> 1 channel
+        y_pred_binary = torch.cat([y_pred[:, :1], y_pred_fore], dim=1)
+        y_prob_binary = torch.softmax(y_pred_binary, 1)
+        y_pred_prob = y_prob_binary[:, 1] # predicted probability map of foreground
         
         with torch.no_grad():
             y_true = torch.where(y_true > 0, 1, 0).squeeze(1).float() # ground truth of foreground
