@@ -60,7 +60,7 @@ To use cbDice loss functions within the nnU-Net framework:
    cp cbDice/loss/* nnUNet/nnunetv2/training/loss/
    ```
 
-2. **Copy trainer variants (optional)**:
+2. **Copy trainer variants**:
    ```bash
    cp cbDice/nnUNetTrainer_variants/* nnUNet/nnunetv2/training/nnUNetTrainer/
    ```
