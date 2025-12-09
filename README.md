@@ -51,6 +51,30 @@ pip install cucim-cu11
 pip install cupy-cuda11x
 ```
 
+## Integration with nnU-Net Framework
+
+To use cbDice loss functions within the nnU-Net framework:
+
+1. **Copy loss files to nnU-Net directory**:
+   ```bash
+   cp cbDice/loss/* nnUNet/nnunetv2/training/loss/
+   ```
+
+2. **Copy trainer variants (optional)**:
+   ```bash
+   cp cbDice/nnUNetTrainer_variants/* nnUNet/nnunetv2/training/nnUNetTrainer/
+   ```
+
+## Standalone Usage
+
+For other frameworks or custom implementations:
+
+1. Copy the `loss/` folder contents to your project directory.
+2. Import the desired loss functions directly into your training scripts.
+3. Adjust import paths according to your project structure.
+
+**Note**: When using outside nnU-Net, you may need to modify import statements and adapt the trainer implementations to match your framework's requirements.
+
 ## Differentiable Binarization
 
 To obtain a differentiable binarized predicted probability map of the foreground, follow these steps:
